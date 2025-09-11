@@ -1,0 +1,62 @@
+﻿@* 
+<form id="editForm">
+    <input type="hidden" asp-for="UserId" id="editId" />
+    <input type="hidden" asp-for="PatientId" id="editPId" /> 
+
+    <div class="mb-3">
+        <label class="form-label" for="doctorId">Doctor</label>
+        <select class="form-select rounded-3" id="doctorId" name="DoctorId" required>
+            <option value="">Select Doctor</option>
+            @{
+                foreach (var item in Model)
+                {
+                    if (item.Role == "Doctor" && item.Doctor != null && item.Doctor.User.IsActive == true && item.Doctor.ApprovalStatus == "Approved")
+                    {
+                        <option value="@item.Doctor.DoctorId">@item.FullName</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="patientId">Patient</label>
+        <select class="form-select rounded-3" id="patientId" name="PatientId" required>
+            <option value="">Select Patient</option>
+            @{
+                foreach (var item in Model)
+                {
+                    if (item.Role == "Patient" && item.Patient != null && item.Patient.User.IsActive == true)
+                    {
+                        <option value="@item.Patient.PatientId">@item.FullName</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="date">Appointment Date & Time</label>
+        <input type="datetime-local" class="form-control rounded-3" required id="date" name="Date">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="status">Status</label>
+        <select class="form-select rounded-3" id="status">
+            <option value="0" selected>Pending</option>
+            <option value="1">Confirmed</option>
+            <option value="2">Cancelled</option>
+            <option value="3">Completed</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="notes">Notes</label>
+        <textarea class="form-control rounded-3" id="notes" name="Notes" rows="3" placeholder="No notes added yet"></textarea>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-info rounded-3" type="submit">Save</button>
+    </div>
+</form> *@

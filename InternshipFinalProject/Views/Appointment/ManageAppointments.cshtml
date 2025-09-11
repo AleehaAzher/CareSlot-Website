@@ -1,0 +1,631 @@
+﻿@model IEnumerable<InternshipFinalProject_Core.Models.UserModel>
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">Manage Appointments</h3>
+        <button class="btn btn-info shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#addAppointmentModal">
+            <i class="bi bi-plus-circle me-2"></i>New Appointment
+        </button>
+    </div>
+
+  @*   <div class="alert alert-success" id="UpdateSuccess" style="display: none;">
+        <strong>Success!</strong> <span id="successMessage"></span>
+    </div>
+    <div class="alert alert-danger" id="UpdateError" style="display: none;">
+        <strong>Error!</strong> <span id="errorMessage"></span>
+    </div> *@
+
+    @* <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-semibold mb-0">Filter Appointments</h5>
+    </div> *@
+
+    <div class="card shadow-sm border-0 rounded-4 mb-2">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    @* <label class="form-label fw-semibold" for="filterDoctorId">Doctor</label> *@
+                    <select class="form-select" id="filterDoctorId">
+                        <option value="" selected>All Doctors</option>
+                        @foreach (var item in Model)
+                        {
+                            if (item.Role == "Doctor" && item.Doctor != null && item.Doctor.User.IsActive==true && item.Doctor.ApprovalStatus=="Approved")
+                            {
+                                <option value="@item.Doctor.DoctorId">@item.FullName</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    @* <label class="form-label fw-semibold" for="filterPatientId">Patient</label> *@
+                    <select class="form-select" id="filterPatientId">
+                        <option value="" selected>All Patients</option>
+                        @foreach (var item in Model)
+                        {
+                            if (item.Role == "Patient" && item.Patient != null && item.Patient.User.IsActive == true)
+                            {
+                                <option value="@item.Patient.PatientId">@item.FullName</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    @* <label class="form-label fw-semibold" for="filterDate">Date</label> *@
+                    <input type="date" class="form-control" id="filterDate">
+                </div>
+
+                <div class="col-md-3">
+                    @* <label class="form-label fw-semibold" for="filterStatus">Status</label> *@
+                    <select class="form-select" id="filterStatus">
+                        <option value="" selected>All Status</option>
+                        <option value="0">Pending</option>
+                        <option value="1">Confirmed</option>
+                        <option value="3">Completed</option>
+                        <option value="2">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mb-4">
+        <button class="btn btn-outline-secondary me-2" id="resetFilters" type="submit">Reset</button>
+        <button class="btn btn-info" id="saveFilters" type="submit">Apply</button>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped  mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Doctor</th>
+                            <th>Patient</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            @* <th>Mode</th> *@
+
+                            @* <th>Notes</th> *@
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentTableBody">
+                        <partial name="AppointmentListPartialView" model="@(ViewBag.appointmentList as List<InternshipFinalProject_Core.Models.AppointmentModel>)" />
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="addAppointmentModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Add Appointment</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addAppointmentForm">
+                    <div class="mb-3">
+                        <label class="form-label" for="doctorId">Doctor</label>
+                        <select class="form-select rounded-3" id="doctorId" name="DoctorId" required>
+                            <option value="">Select Doctor</option>
+                            @{
+                                foreach (var item in Model)
+                                {
+                                    if (item.Role == "Doctor" && item.Doctor != null && item.Doctor.User.IsActive == true && item.Doctor.ApprovalStatus == "Approved")
+                                    {
+                                        <option value="@item.Doctor.DoctorId">@item.FullName</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="patientId">Patient</label>
+                        <select class="form-select rounded-3" id="patientId" name="PatientId" required>
+                            <option value="">Select Patient</option>
+                            @{
+                                foreach (var item in Model)
+                                {
+                                    if (item.Role == "Patient" && item.Patient != null && item.Patient.User.IsActive == true)
+                                    {
+                                        <option value="@item.Patient.PatientId">@item.FullName</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="date">Appointment Date & Time</label>
+                        <input type="datetime-local" class="form-control rounded-3" required id="date" name="Date">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="status">Status</label>
+                        <select class="form-select rounded-3" id="status">
+                            <option value="0" selected>Pending</option>
+                            <option value="1">Confirmed</option>
+                            <option value="2">Cancelled</option>
+                            <option value="3">Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="status">Appointment Mode</label>
+                        <select class="form-select rounded-3" id="mode">
+                            <option value="Audio Call" selected>Audio Call</option>
+                            <option value ="Direct Visit">Direct Visit</option>
+                            <option value="Video Call">Video Call</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="notes">Notes</label>
+                        <textarea class="form-control rounded-3" id="notes" name="Notes" rows="3" placeholder="No notes added yet"></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-info rounded-3" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="editAppointmentModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Add Appointment</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editAppointmentForm">
+                    <input type="hidden" id="editAppointmentId"/>
+                    <div class="mb-3">
+                        <label class="form-label" for="editDoctorId">Doctor</label>
+                        <select class="form-select rounded-3" id="editDoctorId" name="DoctorId" required>
+                            <option value="" >Select Doctor</option>
+                            @{
+                                foreach (var item in Model)
+                                {
+                                    if (item.Role == "Doctor" && item.Doctor != null && item.Doctor.User.IsActive == true && item.Doctor.ApprovalStatus == "Approved")
+                                    {
+                                        <option value="@item.Doctor.DoctorId">@item.FullName</option>
+
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="editPatientId">Patient</label>
+                        <select class="form-select rounded-3" id="editPatientId" name="PatientId" required>
+                            <option value="">Select Patient</option>
+                            @{
+                                foreach (var item in Model)
+                                {
+                                    if (item.Role == "Patient" && item.Patient != null && item.Patient.User.IsActive == true)
+                                    {
+                                        <option value="@item.Patient.PatientId">@item.FullName</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="editDate">Appointment Date & Time</label>
+                        <input type="datetime-local" class="form-control rounded-3" required id="editDate" name="Date">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="editStatus">Status</label>
+                        <select class="form-select rounded-3" id="editStatus">
+                            <option value="0" >Pending</option>
+                            <option value="1">Confirmed</option>
+                            <option value="2">Cancelled</option>
+                            <option value="3">Completed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="status">Appointment Mode</label>
+                        <select class="form-select rounded-3" id="editMode">
+                            <option value="Audio Call" selected>Audio Call</option>
+                            <option value="Direct Visit">Direct Visit</option>
+                            <option value="Video Call">Video Call</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="editNotes">Notes</label>
+                        <textarea class="form-control rounded-3" id="editNotes" name="Notes" rows="3" placeholder="No notes added yet"></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-info rounded-3" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewAppointmentModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-info ">
+                <h5 class="modal-title">Appointment Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <strong>Doctor:</strong><span id="viewDoctor"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Patient:  </strong> <span id="viewPatient"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Date & Time:  </strong> <span id="viewDate"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Status:  </strong> <span id="viewStatus"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Consultation Fee:  </strong> <span id="viewFees"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Appointment Mode:  </strong> <span id="viewMode"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Notes:  </strong> <span id="viewNotes"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Created At:  </strong> <span id="viewCreatedAt"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Updated At:  </strong> <span id="viewUpdatedAt"></span>
+                    </li>
+                    
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteAppointmentModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Delete Appointment</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="bi bi-exclamation-triangle fs-1 text-danger"></i>
+                <p class="mt-3">Are you sure you want to delete?</p>
+                <input type="hidden" id="deleteId" />
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-danger rounded-3" id="deleteSubmitBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<style>
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    .card {
+        border-radius: 12px;
+    }
+
+    .btn {
+        border-radius: 8px;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#addAppointmentForm").on("submit", function (event) {
+            event.preventDefault();
+
+            var formData = {
+                DoctorId: parseInt($("#doctorId").val()),
+                PatientId: parseInt($("#patientId").val()),
+                Date: $("#date").val() || null,
+                Notes: $("#notes").val(),
+                Status: parseInt($("#status").val()),
+                AppointmentType:$("#mode").val()
+            };
+
+            $.ajax({
+                type:'POST',
+                url:'/Appointment/Create',
+                data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                success: function (res) {
+                    if (res.success) {
+                        $("#addAppointmentModal").modal("hide");
+                        showToast("success", res.message || "Appointment created successfully.", function () {
+                            location.reload();
+                        });
+                    } else {
+                        showToast("error", res.message || "Appointment creation failed.", function () {
+                            location.reload();
+                        });
+                    }
+                },
+                error: function () {
+                    showToast("error", "Error saving appointment.", function () {
+                        location.reload();
+                    });
+                }
+            });
+        });
+
+        $("#saveFilters").on("click",function(event){
+            event.preventDefault();
+
+            var dateVal = $("#filterDate").val();
+            var changes={
+                DoctorId: $("#filterDoctorId").val() ? parseInt($("#filterDoctorId").val()) : null,
+                PatientId: $("#filterPatientId").val() ? parseInt($("#filterPatientId").val()) : null,
+                Date: dateVal ? new Date(dateVal).toISOString() : null,
+                Status: $("#filterStatus").val() ? parseInt($("#filterStatus").val()) : null
+            };
+
+            $.ajax({
+                type:'POST',
+                url:'/Appointment/ApplyChanges',
+                data: JSON.stringify(changes),
+                contentType: "application/json; charset=utf-8",
+                success: function (partialViewHtml) {
+                    $("#appointmentTableBody").html(partialViewHtml);
+                },
+                error: function () {
+                    alert("Something went wrong while filtering.");
+                }
+            });
+        });
+
+        $("#resetFilters").on("click",function(event){
+            event.preventDefault();
+
+            $("#filterDoctorId").val("");
+            $("#filterPatientId").val("");
+            $("#filterDate").val("");
+            $("#filterStatus").val("");
+
+            var changes={
+                DoctorId: null,
+                PatientId:null,
+                Date: null,
+                Status: null
+            };
+
+            $.ajax({
+                type:'POST',
+                url:'/Appointment/ApplyChanges',
+                data: JSON.stringify(changes),
+                contentType: "application/json; charset=utf-8",
+                success: function (partialViewHtml) {
+                    $("#appointmentTableBody").html(partialViewHtml);
+                },
+                error: function () {
+                    alert("Something went wrong while filtering.");
+                }
+            });
+        });
+        $(".viewDetails").click(function(event){
+            event.preventDefault();
+            var id=$(this).data('id');
+
+            $.ajax({
+                type:'get',
+                    url:'/Appointment/ViewDetails',
+                dataType:'json',
+                data:{id:id},
+          success: function (response) {
+          if (response.success) {
+
+                    if (response.doctorName) {
+                        $("#viewDoctor").text(response.doctorName);
+            } else {
+                $("#viewDoctor").text("N/A");
+            }
+
+                            if (response.patientName) {
+                        $("#viewPatient").text(response.patientName);
+            } else {
+                $("#viewPatient").text("N/A");
+            }
+
+                if (response.date) {
+                $("#viewDate").text(new Date(response.date).toLocaleString());
+            } else {
+                $("#viewDate").text("N/A");
+            }
+
+            let statusText = "Unknown";
+                if (response.status === 0)
+            {
+                statusText = "Pending";
+                } else if (response.status === 1)
+            {
+                statusText = "Confirmed";
+
+                } else if (response.status === 2)
+            {
+                statusText = "Cancelled";
+                } else if (response.status=== 3)
+            {
+                statusText = "Completed";
+            }
+            $("#viewStatus").text(statusText);
+
+            if (response.notes)
+            {
+                $("#viewNotes").text(response.notes);
+            } else
+            {
+                $("#viewNotes").text("No notes provided");
+            }
+
+            if (response.createdAt)
+            {
+                $("#viewCreatedAt").text(new Date(response.createdAt).toLocaleString());
+            } else
+            {
+                $("#viewCreatedAt").text("N/A");
+            }
+
+            if (response.updatedAt)
+            {
+                $("#viewUpdatedAt").text(new Date(response.updatedAt).toLocaleString());
+            } else
+            {
+                $("#viewUpdatedAt").text("N/A");
+            }
+                if (response.fees)
+                {
+                    $("#viewFees").text(response.fees+" $");
+                } else
+                {
+                        $("#viewFees").text("N/A");
+                }
+                     if (response.mode)
+                    {
+                        $("#viewMode").text(response.mode);
+                    } else
+                    {
+                            $("#viewMode").text("N/A");
+                    }
+
+            $("#viewAppointmentModal").modal("show");
+        }
+        else
+        {
+            alert("Appointment not found.");
+        }
+            },
+            error:function()
+            {
+                alert("Appointment data fetching error");
+            }
+       });
+    });
+    $(".editAppointment").click(function(event){
+        event.preventDefault();
+
+        var id=$(this).data('id');
+        $.ajax({
+            type:'get',
+            url:'/Appointment/Edit',
+            data:{id:id},
+            dataType:"json",
+            success:function(response){
+                if(response.success)
+                {
+                        $("#editAppointmentId").val(response.appointmentId);
+                    $("#editStatus").val(response.status);
+                    $("#editDate").val(response.date);
+                    $("#editNotes").val(response.notes);
+                 $("#editAppointmentModal").modal("show");
+
+                }
+            },
+            error:function()
+            {
+                showToast("error","Error fetching data");
+            }
+        });
+    });
+     $("#editAppointmentForm").on("submit", function (event) {
+            event.preventDefault();
+
+            var formData = {
+                        AppointmentId:parseInt($("#editAppointmentId").val()),
+                DoctorId: parseInt($("#editDoctorId").val()),
+                PatientId: parseInt($("#editPatientId").val()),
+                Date: $("#editDate").val() || null,
+                Notes: $("#editNotes").val(),
+                Status: parseInt($("#editStatus").val()),
+                AppointmentType:$("#editMode").val()
+            };
+
+            $.ajax({
+                type:'POST',
+                url:'/Appointment/Update',
+                data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                success: function (res) {
+                    if (res.success) {
+                            $("#editAppointmentModal").modal("hide");
+                        showToast("success", res.message || "Appointment updated successfully.", function () {
+                            location.reload();
+                        });
+                    } else {
+                        showToast("error", res.message || "Appointment updated failed.", function () {
+                            location.reload();
+                        });
+                    }
+                },
+                error: function () {
+                    showToast("error", "Error updating appointment.", function () {
+                        location.reload();
+                    });
+                }
+            });
+        });
+             $(".deleteAppointmentBtn").click(function () {
+                       var id = $(this).data("id");
+                       $("#deleteId").val(id);
+                   });
+
+                   $("#deleteSubmitBtn").click(function () {
+                       var id = $("#deleteId").val();
+                       $.ajax({
+                           type: 'POST',
+                            url: '/Appointment/Delete',
+                            dataType:"json",
+                            data:{id:id},
+                           success: function (response) {
+                          $("#deleteAppointmentModal").modal("hide");
+
+                         if (response.success) {
+                            showToast("success", response.message || "Appointment deleted successfully.", function () {
+                            location.reload();
+                        });
+                       } else {
+                                showToast("error", response.message || "Appointment deletion failed.", function () {
+                            location.reload();
+                        });
+                       }
+                   },
+                   error: function (response) {
+                            showToast("error", response.message || "Error deleting Appointment.", function () {
+                            location.reload();
+                        });
+                   }
+                       });
+                   });
+});
+</script>

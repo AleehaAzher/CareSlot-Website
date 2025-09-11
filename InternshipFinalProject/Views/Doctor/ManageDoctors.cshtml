@@ -1,0 +1,376 @@
+﻿
+@model IEnumerable<InternshipFinalProject_Core.Models.DoctorModel>
+
+<div class="container-fluid py-4">
+
+    <div class="mb-5">
+        <h4 class="mb-3">New Requests</h4>
+        @* <div class="alert alert-success" id="UpdateSuccess" style="display: none;">
+            <strong>Success!</strong> <span id="successMessage"></span>
+        </div>
+        <div class="alert alert-danger" id="UpdateError" style="display: none;">
+            <strong>Error!</strong> <span id="errorMessage"></span>
+        </div> *@
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle mb-0">
+                        <thead class="table-primary">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col" class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var index = 1;
+
+                                if (Model != null && Model.Any())
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@index</td>
+                                            <td>@item.User.FullName</td>
+                                            <td>@item.User.Email</td>
+                                            <td class="text-center">
+                                                <button class="btn btn-success btn-sm me-1 approve" data-id="@item.UserId">Approve</button>
+                                                <button class="btn btn-danger btn-sm me-1 reject" data-id="@item.UserId">Reject</button>
+                                                <button class="btn btn-info btn-sm view-details" data-id="@item.UserId">View Details</button>
+                                            </td>
+                                        </tr>
+                                        index++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-center">No New Requests</td>
+                                    </tr>
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-semibold mb-0">Filter Doctors</h5>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 mb-2">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    @* <label class="form-label fw-semibold" for="filterDoctorId">Doctor</label> *@
+                    <select class="form-select" id="filterSpecialization">
+                        <option value="" selected>Specialization</option>
+                        <option>Cardiology</option>
+                        <option>Dermatology</option>
+                        <option>Neurology</option>
+                        <option>Orthopedics</option>
+                        <option>Pediatrics</option>
+                        <option>Psychiatry</option>
+                        <option>General Medicine</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    @* <label class="form-label fw-semibold" for="filterPatientId">Patient</label> *@
+                    <select class="form-select" id="filterDays">
+                        <option value="" selected>Availability by days</option>
+                        <option value="Mon">Monday</option>
+                        <option value="Tues">Tuesday</option>
+                        <option value="Wed">Wednesday</option>
+                        <option value="Thurs">Thursday</option>
+                        <option value="Fri">Friday</option>
+                        <option value="Sat">Saturday</option>
+
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    @* <label class="form-label fw-semibold" for="filterStatus">Status</label> *@
+                    <select class="form-select" id="filterStatus">
+                        <option value="" selected>All Status</option>
+                        <option>Approved</option>
+                        <option>Pending</option>
+                        <option>Rejected</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    @* <label class="form-label fw-semibold" for="filterStatus">Status</label> *@
+                    <select class="form-select" id="filterAccount">
+                        <option value="" selected>All Accounts</option>
+                        <option>Active</option>
+                        <option>Deactivated</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mb-4">
+        <button class="btn btn-outline-secondary me-2" id="resetFilters" type="submit">Reset</button>
+        <button class="btn btn-info" id="saveFilters" type="submit">Apply</button>
+    </div>
+
+    <div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            @* <h4 class="mb-0">List of Doctors</h4> *@
+        </div>
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle mb-0">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doctorListBody">
+                            <partial name="DoctorListPartialView" model="@(ViewBag.allDoctors as List<InternshipFinalProject_Core.Models.DoctorModel>)" />
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="doctorDetailsModal" tabindex="-1" aria-labelledby="doctorDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+            <div class="modal-header bg-gradient bg-primary text-white py-3">
+                <h5 class="modal-title fw-bold" id="doctorDetailsLabel">
+                    <i class="bx bx-user-circle me-2"></i> Doctor Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <img src="../assets/img/avatars/defaultAvatar.jpg" id="doctorImage"
+                             class="img-fluid rounded-circle shadow mb-3 border border-3 border-primary"
+                             style="width: 150px; height: 150px; object-fit: cover;">
+                        <h5 class="fw-bold mb-1" id="doctorName"></h5>
+                        <span class="badge bg-info px-3 py-2 rounded-pill" id="doctorSpecialization"></span>
+                    </div>
+
+                    <div class="col-md-8">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Email:</strong> <span id="doctorEmail"></span></li>
+                            <li class="list-group-item"><strong>Contact:</strong> <span id="doctorContact"></span></li>
+                            <li class="list-group-item"><strong>Qualifications:</strong> <span id="doctorQualifications"></span></li>
+                            <li class="list-group-item"><strong>Experience:</strong> <span id="doctorExperience"></span></li>
+                            <li class="list-group-item"><strong>Fees:</strong> <span class="fw-bold text-success" id="doctorFees"></span></li>
+                            <li class="list-group-item"><strong>Gender:</strong> <span id="doctorGender"></span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+                    <i class="bx bx-x me-1"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $(".view-details").click(function(event){
+            event.preventDefault();
+            var id=$(this).data('id');
+            $.ajax({
+                type:'get',
+                url:'/Doctor/ViewDetails',
+                data:{id:id},
+               dataType: "json",
+                success:function(response){
+               // console.log("first"+response.details);
+
+                   if (response.success) {
+                                           // console.log(response.details);
+
+                        $("#doctorName").text(response.fullName);
+                        $("#doctorEmail").text(response.email);
+                        $("#doctorSpecialization").text(response.specialization);
+                        $("#doctorQualifications").text(response.qualifications);
+                        $("#doctorExperience").text(response.experienceYears + " years");
+                        $("#doctorFees").text(response.fees+"$");
+                        $("#doctorContact").text(response.contact);
+                        $("#doctorGender").text(response.gender);
+                          if (response.img) {
+                            $("#doctorImage").attr("src", response.img);
+                        } else {
+                            $("#doctorImage").attr("src", "/images/doctor-placeholder.png");
+                        }
+
+                        $("#doctorDetailsModal").modal("show");
+
+                    } else {
+                         showToast("error", response.message || "Doctor details not fetched.", function () {
+                        location.reload();
+                    });
+                    }
+                },
+                error:function()
+                {
+                     showToast("error", "Failed to load doctor details.", function () {
+                        location.reload();
+                    });
+                }
+            });
+        });
+
+          $(".approve").click(function(event){
+            event.preventDefault();
+            var id=$(this).data('id');
+            $.ajax({
+                type:'post',
+                url:'/Doctor/UpdateStatus',
+                data: { id: id, status: "Approved" },
+                dataType: "json",
+                success: function(response){
+                    if(response.success)
+                     {
+                        // $("#successMessage").text(response.message);
+                        // $("#UpdateSuccess").show();
+
+                        // $("#UpdateError").hide();
+                        showToast("success", response.message || "Doctor status updated successfully.", function () {
+                        location.reload();
+                    });
+
+                     }
+                       else
+                       {
+                       //  $("#errorMessage").text(response.message);
+                       //  $("#UpdateError").show();
+
+                       //  $("#UpdateSuccess").hide();
+                       // }
+                    showToast("error", response.message || "Doctor status updation failed.", function () {
+                        location.reload();
+                    });
+                      // setTimeout(() => location.reload(), 1500);
+                       }
+                },
+                error: function(){
+                     showToast("error", "Error approving doctor.", function () {
+                        location.reload();
+                    });
+                }
+            });
+          });
+             $(".reject").click(function(event){
+            event.preventDefault();
+            var id=$(this).data('id');
+            $.ajax({
+                type:'post',
+                url:'/Doctor/UpdateStatus',
+                data: { id: id, status: "Rejected" },
+                dataType: "json",
+                success: function(response){
+                    if(response.success)
+                     {
+                        // $("#successMessage").text(response.message);
+                        // $("#UpdateSuccess").show();
+
+                        // $("#UpdateError").hide();
+                        showToast("success", response.message || "Doctor status updated successfully.", function () {
+                        location.reload();
+                    });
+
+                     }
+                       else
+                       {
+                        // $("#errorMessage").text(response.message);
+                        // $("#UpdateError").show();
+
+                        // $("#UpdateSuccess").hide();
+                        showToast("error", response.message || "Doctor status updation failed.", function () {
+                        location.reload();
+                    });
+                       }
+
+                      // setTimeout(() => location.reload(), 1500);
+
+                },
+                error: function(){
+                        showToast("error", "Error updating doctor status.", function () {
+                            location.reload();
+                        });
+                }
+            });
+            });
+             $("#saveFilters").on("click",function(event){
+            event.preventDefault();
+
+                // console.log(dayVal);
+    var changes = {
+        Specialization: $("#filterSpecialization").val() || null,
+        Day:  $("#filterDays").val() || null,
+        Status: $("#filterStatus").val() || null,
+        Account:$("#filterAccount").val()|| null
+    };
+
+    // alert("Sending data: " + JSON.stringify(changes));
+            $.ajax({
+                type:'POST',
+                url:'/Doctor/ApplyChanges',
+                data: JSON.stringify(changes),
+                contentType: "application/json; charset=utf-8",
+                success: function (partialViewHtml) {
+                    $("#doctorListBody").html(partialViewHtml);
+                },
+                error: function () {
+                    alert("Something went wrong while filtering.");
+                }
+            });
+        });
+         $("#resetFilters").on("click",function(event){
+            event.preventDefault();
+
+            $("#filterSpecialization").val("");
+            $("#filterDays").val("");
+            $("#filterDate").val("");
+            $("#filterStatus").val("");
+
+            var changes={
+                Specialization: null,
+                Day:null,
+                Status: null
+            };
+
+            $.ajax({
+                type:'POST',
+                url:'/Doctor/ApplyChanges',
+                data: JSON.stringify(changes),
+                contentType: "application/json; charset=utf-8",
+                success: function (partialViewHtml) {
+                    $("#doctorListBody").html(partialViewHtml);
+                },
+                error: function () {
+                    alert("Something went wrong while filtering.");
+                }
+            });
+        });
+    });
+</script>

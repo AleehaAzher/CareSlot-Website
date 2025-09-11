@@ -1,0 +1,252 @@
+﻿@model InternshipFinalProject_Core.Models.AppointmentModel
+@{
+    ViewData["Title"] = "Prescription";
+}
+
+<div class="container-fluid py-4">
+    <h2 class="fw-bold mb-4">Prescription</h2>
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body p-4">
+            <div class="row align-items-center g-3">
+                <input hidden class="doctorId" data-id="@Model.DoctorId"/>
+                <input hidden class="patientId" data-id="@Model.PatientId" />
+
+                <div class="col-md-2 text-center">
+                    <img src="@Model.Patient?.img"
+                         class="rounded-circle border shadow-sm"
+                         alt="Patient" width="100" height="100">
+                    <h6 class="fw-bold mt-2 mb-0">@Model.Patient?.User?.FullName</h6>
+                </div>
+
+                <div class="col-md-2 d-flex flex-column justify-content-center">
+                    <p class="mb-2"><strong>Age:</strong>@Model.Patient?.Age</p>
+                    <p class="mb-2"><strong>Gender:</strong> @Model.Patient?.Gender</p>
+                    <p class="mb-0"><strong>Blood Group:</strong> @Model.Patient?.BloodGroup</p>
+                </div>
+
+                <div class="col-md-3 d-flex flex-column justify-content-center">
+                    <small class="mb-2 text-nowrap text-gray">
+                        <i class="bi bi-telephone-fill  me-2"></i>
+                        @Model.Patient?.Contact
+                    </small>
+                   
+                    <small class="mb-2 text-nowrap text-gray">
+                        <i class="bi bi-envelope-fill  me-2"></i>
+                        @Model.Patient?.User.Email
+                    </small>
+                    <small class="mb-0 text-muted text-nowrap text-gray">
+                        <i class="bi bi-calendar-event me-2"></i>@Model.Date?.ToString("MMM dd, yyyy - hh:mm tt")
+                    </small>
+                </div>
+
+                <div class="col-md-3 d-flex flex-column justify-content-center">
+                    <p class="mb-2">
+                        <strong>Mode:</strong>
+                        @{
+                            if (Model.AppointmentType == "Video Call")
+                            {
+                                <span class="badge bg-info text-dark">
+                                    <i class="bi bi-camera-video me-1"></i> @Model.AppointmentType
+                                </span>
+                            }
+                            else if (Model.AppointmentType == "Audio Call")
+                            {
+                                <span class="badge bg-info text-dark">
+                                    <i class="bi bi-telephone-fill me-1"></i> @Model.AppointmentType
+                                </span>
+                            }
+                            else if (Model.AppointmentType == "Direct Visit")
+                            {
+                                <span class="badge bg-info text-dark">
+                                    <i class="bi bi-hospital me-1"></i> @Model.AppointmentType
+                                </span>
+                            }
+                        }
+                    </p>
+                    <p class="mb-0 text-nowrap">
+                        <strong>Notes:</strong> @Model.Notes
+                    </p>
+                </div>
+
+                <div class="col-md-2 text-center d-flex flex-column justify-content-center">
+                    <strong class="mb-1">Consultation Fee</strong>
+                    <p class="fw-bold text-primary mb-2">
+                        <i class="bi bi-currency-dollar me-1"></i> @Model.Doctor.Fees 
+                    </p>
+                    <span class="badge bg-warning px-3 py-2">
+                        In Progress
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm rounded-3 mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">Diagnosis & Advice</h5>
+                    <div class="mb-3">
+                        <label class="form-label" for="diagnosis">Diagnosis</label>
+                        <textarea class="form-control" rows="3" placeholder="Diagnosis here..." id="diagnosis" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="advice">Advice</label>
+                        <textarea class="form-control" rows="3" placeholder="Advice here..." id="advice" required></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm rounded-3 mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between  mb-3">
+                        <h5>Medicines</h5>
+                        <button type="submit" class="btn btn-outline-primary btn-sm" id="addRow"><i class="bi bi-plus-circle me-2"></i>Add Medicine</button>
+                    </div>
+                   
+
+                    <table class="table table-bordered" id="medicineTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Medicine Name</th>
+                                <th>Dosage</th>
+                                <th>Form</th>
+                                <th>Duration</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="medicineBody">
+                            <tr>
+                                <td><input class="form-control" placeholder="Medicine Name" id="medicine" required/></td>
+                                <td><input class="form-control" placeholder="e.g. 500mg" id="dosage" required/></td>
+                                <td><input class="form-control" placeholder="e.g. tablet" id="form" required/></td>
+                                <td><input class="form-control" placeholder="e.g. 5 days" id="duration" required/></td>
+                                <td><button type="button" class="btn btn-danger btn-sm removeRow">  <i class="bi bi-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="float-end" >
+                <button type="submit" class="btn btn-primary px-4 g-5 saveBtn" data-id="@Model.AppointmentId">Save Prescription</button>
+                <a href="/Doctor/Appointments" class="btn btn-secondary px-4">Cancel</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            let prescriptionDetails = [];
+
+            $("#addRow").click(function () {
+                const medicine = $("#medicine").val().trim();
+                const dosage = $("#dosage").val().trim();
+                const form = $("#form").val().trim();
+                const duration = $("#duration").val().trim();
+
+                if (!medicine || !dosage || !form || !duration) {
+                    showToast("error", "Please enter all fields.");
+                    return;
+                }
+
+                prescriptionDetails.push({
+                    MedicineName: medicine,
+                    Dosage: dosage,
+                    Form: form,
+                    Duration: duration
+                });
+
+                renderTable();
+
+                $("#medicine, #dosage, #form, #duration").val("");
+            });
+
+            function renderTable() {
+                const tbody = $("#medicineTable tbody");
+                tbody.empty();
+
+                prescriptionDetails.forEach((item, index) => {
+                    tbody.append(`
+                        <tr>
+                            <td>${item.MedicineName}</td>
+                            <td>${item.Dosage}</td>
+                            <td>${item.Form}</td>
+                            <td>${item.Duration}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm removeRow" data-index="${index}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+                });
+                   tbody.append(`
+        <tr>
+            <td><input class="form-control" placeholder="Medicine Name" id="medicine"/></td>
+            <td><input class="form-control" placeholder="e.g. 500mg" id="dosage"/></td>
+            <td><input class="form-control" placeholder="e.g. tablet" id="form"/></td>
+            <td><input class="form-control" placeholder="e.g. 5 days" id="duration"/></td>
+            <td><button type="button" class="btn btn-danger btn-sm removeRow"><i class="bi bi-trash"></i></button></td>
+        </tr>
+    `);
+
+            }
+
+            $(document).on("click", ".removeRow", function ()
+            {
+                const index = $(this).data("index");
+                prescriptionDetails.splice(index, 1);
+                renderTable();
+            });
+            $(".saveBtn").click(function(event){
+                event.preventDefault();
+                var appointmentId=$(this).data('id');
+                var doctorId=$(".doctorId").data('id');
+                var patientId=$(".patientId").data('id');
+                var diagnosis=$("#diagnosis").val();
+                var advice=$("#advice").val();
+    if (!diagnosis) {
+         showToast("error", "Diagnosis is required");
+         return;
+     }
+     if (!advice) {
+         showToast("error", "Advice is required");
+         return;
+     }
+     if (prescriptionDetails.length === 0) {
+         showToast("error", "Please add at least one medicine");
+         return;
+     }
+
+                var data={
+                    AppointmentId:appointmentId,
+                    DoctorId:doctorId,
+                    PatientId:patientId,
+                    Diagnosis:diagnosis,
+                    Advice:advice,
+                    PrescriptionDetailsColumn:prescriptionDetails
+                };
+                console.log(data);
+                $.ajax({
+                    type:'post',
+                    url:'/Prescription/SavePrescription',
+                    data:JSON.stringify(data),
+                    contentType:"application/json; charset=utf-8",
+                    success:function(response){
+                        showToast("success",response.message);
+                        setTimeout(function(){
+                                window.location.href = "/Doctor/Appointments"; 
+                            }, 1500);                    },
+                    error:function(){
+                        showToast("error","Error saving prescription");
+                    }
+                });
+            });
+        });
+    </script>

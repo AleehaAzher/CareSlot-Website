@@ -1,0 +1,345 @@
+﻿@model IEnumerable<InternshipFinalProject_Core.Models.PatientModel>
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">Manage Patients</h3>
+        <button class="btn btn-info shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#addPatientModal">
+            <i class="bi bi-person-plus me-2"></i>Add Patient
+        </button>
+    </div>
+    @* <div class="alert alert-success" id="UpdateSuccess" style="display: none;">
+        <strong>Success!</strong> <span id="successMessage"></span>
+    </div>
+    <div class="alert alert-danger" id="UpdateError" style="display: none;">
+        <strong>Error!</strong> <span id="errorMessage"></span>
+    </div> *@
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Patient</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Gender</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientList">
+                        @{
+                            var index = 1;
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@index</td>
+                                    <td>@item.User.FullName</td>
+                                    <td>@item.User.Email</td>
+                                    <td>@item.Contact</td>
+                                    <td>@item.Gender</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary me-2 editBtn" data-id="@item.UserId" type="button">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger deleteBtn" data-bs-toggle="modal" data-bs-target="#deletePatientModal" data-id="@item.UserId">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+
+                                </tr>
+                                index++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="addPatientModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Add Patient</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addPatientForm">
+                    <div class="mb-3">
+                        <label class="form-label" for="fullName">Full Name</label>
+                        <input type="text" class="form-control rounded-3" required id="fullName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" class="form-control rounded-3" required id="email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" class="form-control rounded-3" required id="password" >
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="contact">Contact</label>
+                        <input type="text" class="form-control rounded-3" id="contact">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="gender">Gender</label>
+                        <input type="text" class="form-control rounded-3" id="gender">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="age">Age</label>
+                        <input type="number" class="form-control rounded-3" id="age">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="bloodGroup">Blood Group</label>
+                        <input type="text" class="form-control rounded-3" id="bloodGroup">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="address">Address</label>
+                        <input type="text" class="form-control rounded-3" id="address">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="gName">Guardian name</label>
+                        <input type="text" class="form-control rounded-3" id="gName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="gContact">Guardian Contact</label>
+                        <input type="number" class="form-control rounded-3" id="gContact">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-success rounded-3" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+          
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editPatientModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Edit Patient</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <partial name="PatientEditPartialView" model="new InternshipFinalProject_Core.Models.PatientModel()" />
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deletePatientModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Delete Patient</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="bi bi-exclamation-triangle fs-1 text-danger"></i>
+                <p class="mt-3">Are you sure you want to delete?</p>
+                <input type="hidden" id="deleteId" />
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-danger rounded-3" id="deleteSubmitBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+<style>
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    .card {
+        border-radius: 12px;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+    }
+
+    .btn {
+        border-radius: 8px;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+             // function showAlert(isSuccess, message) {
+             //   if (isSuccess) {
+             //       $("#UpdateError").hide();
+             //       $("#successMessage").text(message);
+             //       $("#UpdateSuccess").fadeIn().delay(3000).fadeOut();
+             //   } else {
+             //       $("#UpdateSuccess").hide();
+             //       $("#errorMessage").text(message);
+             //       $("#UpdateError").fadeIn().delay(3000).fadeOut();
+             //   }
+             // }
+             $("#addPatientForm").on("submit", function (event) {
+                    event.preventDefault();
+                    var formData={
+                    FullName: $("#fullName").val(),
+                    Email: $("#email").val(),
+                    Password: $("#password").val(),
+                    Contact: $("#contact").val(),
+                    Gender: $("#gender").val(),
+                    Age: $("#age").val(),
+                    BloodGroup: $("#bloodGroup").val(),
+                    EmergencyContactName: $("#gName").val(),
+                    EmergencyContact: $("#gContact").val(),
+                    Address: $("#address").val(),
+                };
+
+                $.ajax({
+                type:'POST',
+                url:'/Patient/Create',
+                data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                success: function (res) {
+                       if (res.success) {
+                       $("#addPatientModal").modal("hide");
+                   showToast("success", res.message || "Patient created successfully.", function () {
+                        location.reload();
+                    });
+                   } else {
+                        showToast("error", res.message || "Patient creation failed.", function () {
+                        location.reload();
+                    });
+                   }
+               },
+               error: function (xhr) {
+                    showToast("error","Error saving patient.", function () {
+                        location.reload();
+                    });
+               }
+            });
+         });
+            $(document).on("click", ".editBtn", function () {
+        var id = $(this).data('id');
+
+        $.ajax({
+            type: 'GET',
+            url: "/Patient/Edit",
+            data: { id: id },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    $("#editId").val(response.userId);
+                    $("#editFullName").val(response.fullName);
+                    $("#editEmail").val(response.email);
+                    $("#editPassword").val("");
+                    $("#editContact").val(response.contact);
+                    $("#editGender").val(response.gender);
+                    $("#editAge").val(response.age);
+                    $("#editBloodGroup").val(response.bloodGroup);
+                    $("#editAddress").val(response.address);
+                    $("#editGName").val(response.gName);
+                    $("#editGContact").val(response.gContact);
+                       $("#editPId").val(response.patientId);
+
+                    $("#editPatientModal").modal("show");
+                } else {
+                    alert("Error: " + (response.message || "Failed to load patient data"));
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Error fetching patient data: " + error);
+            }
+        });
+             });
+
+          $("#updateSubmitBtn").click(function (event) {
+               event.preventDefault();
+
+               var updatedData = {
+                   UserId: parseInt($("#editId").val()),
+                   Age: parseInt($("#editAge").val()) || null,
+                   BloodGroup: $("#editBloodGroup").val(),
+                   Gender: $("#editGender").val(),
+                   Contact: $("#editContact").val(),
+                   EmergencyContactName: $("#editGName").val(),
+                   EmergencyContact: $("#editGContact").val(),
+                   Address: $("#editAddress").val(),
+                   
+                       FullName: $("#editFullName").val(),
+                       Email: $("#editEmail").val(),
+                       PasswordHash: $("#editPassword").val(),
+                   
+               };
+
+
+               $.ajax({
+                   type: 'POST',
+                   url: '/Patient/Edit',
+                   data: JSON.stringify(updatedData),
+                   contentType: "application/json; charset=utf-8",
+                     dataType: "json", 
+                     success: function (response) {
+                         if (response.success) {
+                       $("#editPatientModal").modal("hide");
+                       showToast("success", response.message || "Patient updated successfully.", function () {
+                        location.reload();
+                    });
+                   } else {
+                        showToast("error", response.message || "Patient updation failed.", function () {
+                        location.reload();
+                    });
+                   }
+               },
+               error: function (xhr) {
+                    showToast("error", "Patient updation failed.", function () {
+                        location.reload();
+                    });
+               }
+               });
+
+           });
+
+              $(".deleteBtn").click(function () {
+                   var id = $(this).data("id");
+                   $("#deleteId").val(id);
+               });
+
+               $("#deleteSubmitBtn").click(function () {
+                   var id = $("#deleteId").val();
+                   $.ajax({
+                       type: 'POST',
+                        url: '/Patient/Delete',
+                        dataType:"json",
+                        data:{id:id},
+                       success: function (response) {
+                      $("#deletePatientModal").modal("hide");
+
+                     if (response.success) {
+                        showToast("success", response.message || "Patient deleted successfully.", function () {
+                        location.reload();
+                    });
+                   } else {
+                        showToast("error", response.message || "Patient deletion failed.", function () {
+                        location.reload();
+                    });
+                   }
+               },
+               error: function (response) {
+                    showToast("error", response.message || "Error deleting patient.", function () {
+                        location.reload();
+                    });
+               }
+                   });
+               });
+            });
+</script>

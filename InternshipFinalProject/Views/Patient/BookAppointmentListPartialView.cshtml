@@ -1,0 +1,60 @@
+﻿@model IEnumerable<InternshipFinalProject_Core.Models.DoctorModel>
+@{
+    var filteredDoctors = Model;
+    if (filteredDoctors != null && filteredDoctors.Any())
+    {
+        foreach (var item in Model)
+        {
+            if (item.User.IsActive == true && item.ApprovalStatus == "Approved")
+            {
+                <div class="col-md-3 col-sm-6">
+                    <div class="card shadow-sm h-100 border-0">
+                        @{
+                            if (!string.IsNullOrEmpty(item.img))
+                            {
+                                <div class="text-center mt-3">
+                                    <img src="@item.img"
+                                         class="rounded-circle shadow-sm"
+                                         style="width:180px; height:180px; object-fit:cover;"
+                                         alt="Doctor Image">
+                                </div>
+
+                            }
+                        }
+                        <div class="card-body p-2">
+                            <h6 class="card-title mb-1 fw-bold ms-1 doctorName" data-doctorName="@item.User.FullName">Dr. @item.User.FullName</h6>
+                            <small class="text-muted d-block mb-2 ms-1 specialization" data-Specialization="@item.Specialization"><span class="badge bg-light text-dark">@item.Specialization</span></small>
+                            <p class="mb-1 small"><i class="bx bx-money  me-1 ms-1"></i> Fees: <span class="fw-bold text-dark">@item.Fees $</span></p>
+                            @{
+                                if (item.AvailableDays != null)
+                                {
+                                    var daysString = string.Join(",", item.AvailableDays.Select(d => d.Day));
+                                    <p class="mb-2 small days" data-days="@daysString">
+                                        <i class="bx bx-time-five me-1 ms-1"></i>
+                                        @daysString
+                                    </p>
+                                }
+                            }
+                            <div class="d-flex float-end align-items-center">
+                                <button class="btn btn-sm btn-outline-primary bookBtn" data-doctorId="@item.DoctorId" type="submit">Book</button>
+                                @*<i class="bx bx-heart fs-5 text-danger" style="cursor:pointer;"></i>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="card text-center shadow-sm border-0 p-4">
+                <div class="card-body">
+                    <i class="bx bx-search-alt-2 fs-1 text-muted mb-3"></i>
+                    <h5 class="fw-bold mb-2">No Doctors Found</h5>
+                    <p class="text-muted mb-0">Try adjusting your filters or check back later for available doctors.</p>
+                </div>
+            </div>
+        </div>
+    }
+}

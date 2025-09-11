@@ -1,0 +1,241 @@
+﻿<div class="container py-5 d-none" id="PatientProfile">
+    <div class="card shadow-lg border-0 rounded-4 mx-auto" style="max-width: 900px;">
+        <p class="d-none" id="currentId"></p>
+
+        <div class="card-header bg-primary text-white text-center py-4">
+            <h3 class="mb-0">Patient Profile</h3>
+        </div>
+
+        <div class="card-body p-5">
+
+            <div class="text-center mb-5">
+                <img src="../assets/img/avatars/defaultAvatar.jpg"
+                     class="rounded-circle border shadow-sm"
+                     width="130" height="130" id="uploadedAvatar" />
+                <div class="mt-3">
+                    <label for="upload" class="btn btn-sm btn-primary me-2">
+                        <i class="bx bx-upload me-1"></i> Upload
+                        <input type="file" id="upload" hidden accept="image/png, image/jpeg" />
+                    </label>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="resetImage">
+                        <i class="bx bx-reset me-1"></i> Reset
+                    </button>
+                </div>
+                <p class="text-muted small mt-2">Allowed JPG, PNG. Max size 800K</p>
+
+                <div class="alert alert-success" id="UpdateSuccess" style="display: none;">
+                    <strong>Success!</strong> <span id="successMessage"></span>
+                </div>
+
+                <div class="alert alert-danger" id="UpdateError" style="display: none;">
+                    <strong>Error!</strong> <span id="errorMessage"></span>
+                </div>
+            </div>
+
+            <form id="patientProfileForm" method="POST">
+
+                <h5 class="text-primary fw-bold mb-3">Personal Information</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Full Name</label>
+                        <input class="form-control" type="text" id="fullName" name="fullName" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Email</label>
+                        <input class="form-control" type="email" id="email" name="email" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">New Password</label>
+                        <input class="form-control" type="password" id="newPassword" name="password" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Contact Number</label>
+                        <input class="form-control" type="text" id="contact" name="contact" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Gender</label>
+                        <select class="form-select" id="gender" name="Gender">
+                            <option value="">-- Select Gender --</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Age</label>
+                        <input class="form-control" type="number" id="age" name="Age" min="1" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Blood Group</label>
+                        <input class="form-control" type="text" id="bloodGroup" name="bloodGroup" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Emergency Contact Name</label>
+                        <input class="form-control" type="text" id="gName" name="gName" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Emergency Contact</label>
+                        <input class="form-control" type="text" id="gContact" name="gContact" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Address</label>
+                        <textarea class="form-control" id="address" rows="3" name="Address" placeholder="Current Address..."></textarea>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary px-4 me-2">Save Changes</button>
+                    <a href="/Home/PatientDashboard" class="btn btn-outline-secondary px-4">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: '/Navbar/getId',
+            dataType: 'json',
+            success: function (response) {
+                $("#currentId").text(response.id);
+                var id = parseInt(response.id);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Navbar/getData',
+                    data: { id: id },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            $("#fullName").val(response.name);
+                            $("#email").val(response.email);
+                            $("#contact").val(response.contact);
+                            $("#gender").val(response.gender);
+                            $("#gName").val(response.gName);
+                            $("#gContact").val(response.gContact);
+                            $("#address").val(response.address);
+                            $("#age").val(response.age);
+                            $("#bloodGroup").val(response.bloodGroup);
+
+                            if (response.img) {
+                                $("#uploadedAvatar").attr("src", response.img);
+                            }
+                            $("#PatientProfile").removeClass("d-none");
+                        } else {
+                            alert("Failed to get patient data.");
+                        }
+                    },
+                    error: function () {
+                        alert("Error getting patient data.");
+                    }
+                });
+            },
+            error: function () {
+                alert("Error getting currentId in profile");
+            }
+        });
+
+        var uploadedFile = null;
+
+        $("#upload").on("change", function (event) {
+            var file = event.target.files[0];
+            if (file) {
+                uploadedFile = file;
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#uploadedAvatar").attr("src", e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        $("#resetImage").on("click", function () {
+            $("#uploadedAvatar").attr("src", "../assets/img/avatars/defaultAvatar.jpg");
+            $("#upload").val("");
+            uploadedFile = null;
+        });
+
+        // $("#doctorProfileForm").validate({
+        //     rules: {
+        //         fullName: { required: true, minlength: 3 },
+        //         email: { required: true, email: true },
+        //         contact: { required: true, digits: true, minlength: 10 },
+        //         Qualifications: { required: true },
+        //         Specialization: { required: true },
+        //         ExperienceYears: { required: true, number: true, min: 0 },
+        //         Fees: { required: true, number: true, min: 0 },
+        //         AvailableFromTime: { required: true },
+        //         AvailableToTime: { required: true },
+        //         Gender: { required: true },
+        //         Bio: { required: true, minlength: 10 }
+        //     },
+        //     messages: {
+        //         fullName: "Please enter your full name (min 3 characters).",
+        //         email: "Please enter a valid email.",
+        //         contact: "Enter a valid contact number (digits only).",
+        //         Qualifications: "Enter your most recent qualification.",
+        //         Specialization: "Select a specialization.",
+        //         ExperienceYears: "Enter valid experience in years.",
+        //         Fees: "Enter consultation fees.",
+        //         AvailableFromTime: "Select available from time.",
+        //         AvailableToTime: "Select available to time.",
+        //         Gender: "Select gender.",
+        //         Bio: "Enter a short bio (min 10 characters)."
+        //     },
+        //     errorClass: "text-danger",
+        //     errorPlacement: function (error, element) {
+        //         error.insertAfter(element);
+        //     }
+        // });
+
+        $("#patientProfileForm").on("submit", function (event) {
+            event.preventDefault();
+            // if (!$(this).valid()) return;
+
+            var formData = new FormData();
+            formData.append("id", $("#currentId").text());
+            formData.append("fullName", $("#fullName").val());
+            formData.append("email", $("#email").val());
+            formData.append("password", $("#newPassword").val());
+            formData.append("Contact", $("#contact").val());
+            formData.append("Gender", $("#gender").val());
+            formData.append("EmergencyContactName", $("#gName").val());
+            formData.append("EmergencyContact", $("#gContact").val());
+            formData.append("Address", $("#address").val());
+            formData.append("BloodGroup", $("#bloodGroup").val());
+            formData.append("Age", $("#Age").val());
+            if (uploadedFile) formData.append("img", uploadedFile);
+
+            $.ajax({
+                type: 'POST',
+                url: '/Navbar/UpdatePatientProfile',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.success) {
+                        $("#successMessage").text(response.message);
+                        $("#UpdateSuccess").show();
+                        $("#UpdateError").hide();
+                        setTimeout(() => window.location.href = "/Home/PatientDashboard", 2000);
+                    } else {
+                        $("#errorMessage").text(response.message);
+                        $("#UpdateError").show();
+                        $("#UpdateSuccess").hide();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $("#errorMessage").text("Something went wrong: " + error);
+                    $("#UpdateError").show();
+                    $("#UpdateSuccess").hide();
+                }
+            });
+        });
+
+    });
+</script>

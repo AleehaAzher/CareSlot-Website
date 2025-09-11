@@ -1,0 +1,183 @@
+﻿@{
+    ViewData["Title"] = "Patient Dashboard";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h3 class="fw-bold">Welcome back, @ViewBag.name</h3>
+        <p class="text-muted">Here’s an overview of your health and appointments.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <h6 class="text-muted text-nowrap">Upcoming Appointments</h6>
+                    <h3 class="fw-bold" id="upcomingAppointments"></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Completed Visits</h6>
+                    <h3 class="fw-bold" id="completedAppointments"></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Prescriptions</h6>
+                    <h3 class="fw-bold" id="prescriptionCount"></h3>
+                    @* <small class="text-warning"><i class="bi bi-capsule"></i> Active</small> *@
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    @* 
+    <div class="row mt-4 g-4">
+        <!-- Health Chart -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Health Overview</h5>
+                    <canvas id="healthChart" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Upcoming Appointments</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="fw-bold mb-0">Dr. Sarah Smith</h6>
+                                <small class="text-muted">Cardiologist - Sep 5, 3:00 PM</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">Video Call</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="fw-bold mb-0">Dr. John Doe</h6>
+                                <small class="text-muted">Dentist - Sep 7, 11:00 AM</small>
+                            </div>
+                            <span class="badge bg-success rounded-pill">Direct Visit</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="fw-bold mb-0">Dr. Emily White</h6>
+                                <small class="text-muted">Psychiatrist - Sep 9, 6:00 PM</small>
+                            </div>
+                            <span class="badge bg-warning rounded-pill">Audio Call</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Your Doctors</h5>
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="card p-3 shadow-sm border-0 rounded-3" style="width: 200px;">
+                            <img src="../assets/img/avatars/1.png" class="rounded-circle mx-auto d-block" width="60">
+                            <h6 class="fw-bold text-center mt-2">Dr. Sarah Smith</h6>
+                            <p class="text-muted text-center small mb-1">Cardiologist</p>
+                            <div class="text-center">
+                                <i class="bi bi-telephone me-2"></i>
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                        </div>
+                        <div class="card p-3 shadow-sm border-0 rounded-3" style="width: 200px;">
+                            <img src="../assets/img/avatars/2.png" class="rounded-circle mx-auto d-block" width="60">
+                            <h6 class="fw-bold text-center mt-2">Dr. John Doe</h6>
+                            <p class="text-muted text-center small mb-1">Dentist</p>
+                            <div class="text-center">
+                                <i class="bi bi-telephone me-2"></i>
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> *@
+    @* </div> *@
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // const ctx = document.getElementById('healthChart').getContext('2d');
+    // const healthChart = new Chart(ctx, {
+    //     type: 'line',
+    //     data: {
+    //         labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    //         datasets: [{
+    //             label: 'Blood Pressure',
+    //             data: [120, 122, 118, 121, 119],
+    //             borderColor: '#4e73df',
+    //             borderWidth: 2,
+    //             fill: false
+    //         },
+    //         {
+    //             label: 'Heart Rate',
+    //             data: [75, 80, 78, 77, 76],
+    //             borderColor: '#e74a3b',
+    //             borderWidth: 2,
+    //             fill: false
+    //         }]
+    //     },
+    //     options: {
+    //         responsive: true,
+    //         plugins: { legend: { position: 'bottom' } }
+    //     }
+    // });
+    $(document).ready(function(){
+        var id='@ViewBag.userid';
+    $.ajax({
+            type:'get',
+            url:'/Appointment/PatientAppointmentCount',
+            data:{id:id},
+            dataType:'json',
+            success:function(response){
+                if(response.success)
+                {
+                    $("#upcomingAppointments").text(response.confirmed);
+                   $("#completedAppointments").text(response.completed);
+                }
+            },
+            error:function()
+            {
+                alert("Error getting appointments count");
+            }
+        });
+            $.ajax({
+            type:'get',
+            url:'/Prescription/PatientPrescriptionCount',
+            data:{id:id},
+            dataType:'json',
+            success:function(response){
+                if(response.success)
+                {
+                    $("#prescriptionCount").text(response.count);
+                }
+            },
+            error:function()
+            {
+                alert("Error getting prescription count");
+            }
+        });
+    });
+</script>

@@ -1,0 +1,54 @@
+﻿@model InternshipFinalProject_Core.Models.PatientModel
+
+<form id="editForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="UserId" id="editId" />
+    <input type="hidden" asp-for="PatientId" id="editPId" />
+
+    <div class="form-group mb-3">
+        <label class="form-label text-primary" for="editFullName">Full Name</label>
+        <input class="form-control" id="editFullName" required />
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label text-primary" for="editEmail">Email</label>
+        <input class="form-control" id="editEmail" required />
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="editPassword">Password</label>
+        <input type="password" class="form-control rounded-3" id="editPassword">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="editContact">Contact</label>
+        <input type="text" class="form-control rounded-3" id="editContact">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="editGender">Gender</label>
+        <input type="text" class="form-control rounded-3" id="editGender">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="editAge">Age</label>
+        <input type="number" class="form-control rounded-3" id="editAge">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="editBloodGroup">Blood Group</label>
+        <input type="text" class="form-control rounded-3" id="editBloodGroup">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="editAddress">Address</label>
+        <input type="text" class="form-control rounded-3" id="editAddress">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="editGName">Guardian name</label>
+        <input type="text" class="form-control rounded-3" id="editGName">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="editGContact">Guardian Contact</label>
+        <input type="number" class="form-control rounded-3" id="editGContact">
+    </div>
+
+    <div class="mx-auto d-grid">
+        <button type="submit" class="btn btn-warning btn-block" id="updateSubmitBtn">Update</button>
+    </div>
+</form>

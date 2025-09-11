@@ -1,0 +1,88 @@
+﻿@model IEnumerable<InternshipFinalProject_Core.Models.AppointmentModel>
+
+@{
+    if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <div class="card shadow-sm border-0 rounded-4 mb-3">
+                <div class="card-body row align-items-center text-nowrap">
+
+                    <div class="col-md-1 text-center">
+                        <img src="@item.Doctor?.img" class="rounded-circle" alt="doctor" width="60" height="60">
+                    </div>
+
+                    <div class="col-md-2">
+                        <h6 class="fw-bold mb-1">Dr. @item.Doctor?.User?.FullName</h6>
+                    </div>
+
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">
+                            <i class="bi bi-clock me-1"></i>@item.Date?.ToString("MMM dd, yyyy - hh:mm tt")
+                        </small>
+                        <h6 class="mb-0">@item?.Notes | @item?.AppointmentType</h6>
+                    </div>
+
+                    <div class="col-md-3">
+                        <h6 class="text-gray mb-1"><i class="bi bi-envelope-fill me-2"></i>@item.Doctor?.User?.Email</h6>
+                        <h6 class="text-gray mb-1"><i class="bi bi-telephone-fill me-2"></i>@item.Doctor?.Contact</h6>
+                    </div>
+
+                    <div class="col-md-3 d-flex align-items-center justify-content-end">
+                        @if (item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Pending)
+                        {
+                            
+                            <span class="badge bg-warning me-2">Pending</span>
+                            <button class="btn btn-sm btn-outline-info me-2 viewDetails" data-id="@item.AppointmentId">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        }
+                        else if (item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Confirmed)
+                        {
+                            <span class="badge bg-success me-2">Confirmed</span>
+                            <button class="btn btn-sm btn-outline-info me-2 viewDetails" data-id="@item.AppointmentId">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-check-circle me-1"></i> Attend now
+                            </a>
+                        }
+                        else if (item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Cancelled)
+                        {
+                            <span class="badge bg-danger me-2">Cancelled</span>
+                            <button class="btn btn-sm btn-outline-info me-2 viewDetails" data-id="@item.AppointmentId">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <a href="#" class="btn btn-outline-primary btn-sm editAppointment" data-id="@item.AppointmentId">
+                                <i class="bi bi-arrow-repeat me-1"></i> Reschedule
+                            </a>
+                        }
+                        else if (item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Completed)
+                        {
+                            <span class="badge bg-secondary me-2">Completed</span>
+                            <button class="btn btn-sm btn-outline-info me-2 viewDetails" data-id="@item.AppointmentId">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i> Book again
+                            </a>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="card text-center shadow-sm border-0 p-4">
+                <div class="card-body">
+                    <i class="bx bx-search-alt-2 fs-1 text-muted mb-3"></i>
+                    <h5 class="fw-bold mb-2">No Appointments Found</h5>
+                    <p class="text-muted mb-0">Try adjusting your filters or check back later for available appointments.</p>
+                </div>
+            </div>
+        </div>
+    }
+}

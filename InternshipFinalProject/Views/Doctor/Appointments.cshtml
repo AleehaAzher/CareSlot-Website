@@ -1,0 +1,312 @@
+﻿
+@{
+    ViewData["Title"] = "My Appointments";
+}
+
+@model IEnumerable<InternshipFinalProject_Core.Models.AppointmentModel>
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold">My Appointments</h4>
+
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-4">
+                    <select class="form-select" id="filterStatus">
+                        <option value="" selected>--Status--</option>
+                        <option value="1">Upcoming</option>
+                        <option value="2">Cancelled</option>
+                        <option value="3">Completed</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <select class="form-select" id="filterMode">
+                        <option value="" selected>--Appointment Mode--</option>
+                        <option value="Audio Call">Audio Call</option>
+                        <option value="Video Call">Video Call</option>
+                        <option value="Direct Visit">Direct Visit</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 d-flex justify-content-end">
+                    <button class="btn btn-outline-secondary me-2" id="resetFilters" type="submit">Reset</button>
+                    <button class="btn btn-info" id="saveFilters" type="submit">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="appointmentList">
+        <partial name="DoctorAppointmentListPartialView" model="Model" />
+    </div>
+</div>
+
+
+<div class="modal fade" id="viewAppointmentModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-info ">
+                <h5 class="modal-title">Appointment Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <strong>Doctor:</strong><span id="viewDoctor"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Patient:  </strong> <span id="viewPatient"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Date & Time:  </strong> <span id="viewDate"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Status:  </strong> <span id="viewStatus"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Consultation Fee:  </strong> <span id="viewFees"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Appointment Mode:  </strong> <span id="viewMode"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Notes:  </strong> <span id="viewNotes"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Created At:  </strong> <span id="viewCreatedAt"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Updated At:  </strong> <span id="viewUpdatedAt"></span>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="editAppointmentModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Reschedule Appointment</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editAppointmentForm">
+                    <input type="hidden" id="editAppointmentId" />
+                    <div class="mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold" for="editDoctorName">Doctor Name</label>
+                            <input type="text" class="form-control" readonly id="editDoctorName" />
+                            <input hidden id="editDoctorId" />
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold" for="editSpecialization">Department</label>
+                            <input type="text" class="form-control" readonly id="editSpecialization" />
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold" for="editPatientName">Patient Name</label>
+                            <input type="text" class="form-control" placeholder="Enter patient name" id="editPatientName" />
+                            <input hidden id="editPatientId" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="status">Appointment Mode</label>
+                            <select class="form-select rounded-3" id="editMode">
+                                <option value="" selected>--Mode--</option>
+                                <option value="Audio Call">Audio Call</option>
+                                <option value="Direct Visit">Direct Visit</option>
+                                <option value="Video Call">Video Call</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold">Appointment Date & Time</label>
+                            <input type="datetime-local" class="form-control" id="editDate" />
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold" for="editNotes">Notes</label>
+                            <textarea class="form-control" rows="3" placeholder="Enter any additional notes or symptoms" id="editNotes"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-info rounded-3" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+<script>
+    $(document).ready(function(){
+    $(document).on("click", ".viewDetails", function(event){
+        event.preventDefault();
+            var id=$(this).data('id');
+
+            $.ajax({
+                type:'get',
+                url:'/Appointment/ViewDetails',
+                dataType:'json',
+                data:{id:id},
+          success: function (response) {
+          if (response.success) {
+
+                    if (response.doctorName) {
+                        $("#viewDoctor").text(" Dr. " +response.doctorName);
+            } else {
+                $("#viewDoctor").text("N/A");
+            }
+
+                            if (response.patientName) {
+                        $("#viewPatient").text(response.patientName);
+            } else {
+                $("#viewPatient").text("N/A");
+            }
+
+                if (response.date) {
+                $("#viewDate").text(new Date(response.date).toLocaleString());
+            } else {
+                $("#viewDate").text("N/A");
+            }
+
+            let statusText = "Unknown";
+                if (response.status === 0)
+            {
+                statusText = "Pending";
+                } else if (response.status === 1)
+            {
+                statusText = "Confirmed";
+
+                } else if (response.status === 2)
+            {
+                statusText = "Cancelled";
+                } else if (response.status=== 3)
+            {
+                statusText = "Completed";
+            }
+            $("#viewStatus").text(statusText);
+
+            if (response.notes)
+            {
+                $("#viewNotes").text(response.notes);
+            } else
+            {
+                $("#viewNotes").text("No notes provided");
+            }
+
+            if (response.createdAt)
+            {
+                $("#viewCreatedAt").text(new Date(response.createdAt).toLocaleString());
+            } else
+            {
+                $("#viewCreatedAt").text("N/A");
+            }
+
+            if (response.updatedAt)
+            {
+                $("#viewUpdatedAt").text(new Date(response.updatedAt).toLocaleString());
+            } else
+            {
+                $("#viewUpdatedAt").text("N/A");
+            }
+                if (response.fees)
+                {
+                    $("#viewFees").text(response.fees+" $");
+                } else
+                {
+                        $("#viewFees").text("N/A");
+                }
+                     if (response.mode)
+                    {
+                        $("#viewMode").text(response.mode);
+                    } else
+                    {
+                            $("#viewMode").text("N/A");
+                    }
+
+            $("#viewAppointmentModal").modal("show");
+        }
+        else
+        {
+            alert("Appointment not found.");
+        }
+            },
+            error:function()
+            {
+                alert("Appointment data fetching error");
+            }
+       });
+    });
+    
+          $("#saveFilters").on("click",function(event){
+            event.preventDefault();
+
+            var changes={
+                Status: $("#filterStatus").val() ? parseInt($("#filterStatus").val()) : null,
+                Mode: $("#filterMode").val() ? $("#filterMode").val() :null
+            };
+
+            $.ajax({
+                type:'POST',
+                url:'/Doctor/DoctorAppointmentsApplyChanges',
+                data: JSON.stringify(changes),
+                contentType: "application/json; charset=utf-8",
+                success: function (partialViewHtml) {
+                    $("#appointmentList").html(partialViewHtml);
+                },
+                error: function () {
+                showToast("error","Something went wrong while filtering.");
+                }
+            });
+        });
+
+        $("#resetFilters").on("click",function(event){
+            event.preventDefault();
+
+            $("#filterMode").val("");
+            $("#filterStatus").val("");
+
+            var changes={
+                Mode:null,
+                Status: null
+            };
+
+            $.ajax({
+                type:'POST',
+                url:'/Doctor/DoctorAppointmentsApplyChanges',
+                data: JSON.stringify(changes),
+                contentType: "application/json; charset=utf-8",
+                success: function (partialViewHtml) {
+                    $("#appointmentList").html(partialViewHtml);
+                },
+                error: function () {
+                    showToast("error","Something went wrong while filtering.");
+                }
+            });
+        });
+    $(document).on("click", ".startNowBtn", function () {
+        var id=$(this).data('id');
+           window.location.href = "/Prescription/StartNow?id=" + id;
+        });
+    });
+</script>

@@ -1,0 +1,261 @@
+﻿
+<!doctype html>
+<html lang="en"
+      class="layout-menu-fixed layout-compact"
+      data-assets-path="../assets/"
+      data-template="vertical-menu-template-free">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>CareSlot</title>
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../assets/img/icons/brands/Stetho-logo.jpeg" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
+    <!-- Icons -->
+    <link rel="stylesheet" href="../assets/vendor/fonts/iconify-icons.css" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/vendor/css/core.css" />
+    <link rel="stylesheet" href="../assets/css/demo.css" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="../assets/vendor/libs/apex-charts/apex-charts.css" />
+
+    <!-- Helpers -->
+    <script src="../assets/vendor/js/helpers.js"></script>
+
+    <!-- Config -->
+    <script src="../assets/js/config.js"></script>
+
+    
+</head>
+
+<body>
+    @* <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container"> *@
+
+            <!-- Menu -->
+            @* <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+                <div class="app-brand demo">
+                    <a href="#" class="app-brand-link">
+                        <span class="app-brand-logo demo">
+                            <img src="../assets/img/icons/brands/Stetho-logo.jpeg" alt="My Logo" class="brand-logo" style="width: 50px; height: auto; vertical-align: middle;">
+                        </span>
+                        <span class="app-brand-text demo menu-text fw-bold ms-2">
+                            Care<span>Slot</span>
+                        </span>
+                    </a>
+                    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+                        <i class="bx bx-chevron-left align-middle"></i>
+                    </a>
+                </div>
+
+                <div class="menu-divider mt-0"></div>
+                <div class="menu-inner-shadow"></div>
+
+
+                
+            </aside> *@
+            <!-- / Menu -->
+            <!-- Layout container -->
+            @* <div class="layout-page"> *@
+
+                <!-- Navbar -->
+                <nav class="layout-navbar navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme container-fluid w-80"
+                     id="layout-navbar">
+
+                    <div class="navbar-nav-right d-flex align-items-center justify-content-end" id="navbar-collapse">
+
+
+                        <ul class="navbar-nav flex-row align-items-center ms-md-auto">
+                            <!-- User -->
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow p-0"
+                                   href="javascript:void(0);"
+                                   data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <img src="../assets/img/avatars/1.jpg" class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar avatar-online">
+                                                        <img src="../assets/img/avatars/defaultAvatar.jpg" class="w-px-40 h-auto rounded-circle" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-0" id="currentName"></h6>
+                                                    <small class="text-body-secondary" id="currentRole"></small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li><div class="dropdown-divider my-1"></div></li>
+                                    <li>
+                                        <a class="dropdown-item" href="/Navbar/DoctorProfile" id="myProfile"><i class="icon-base bx bx-user icon-md me-3"></i><span>My Profile</span></a>
+                                    </li>
+                                   
+                                    <li><div class="dropdown-divider my-1"></div></li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0)" id="Logout">
+                                            <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- /User -->
+                        </ul>
+                    </div>
+                </nav>
+
+                <!-- Content -->
+                <div class="content-wrapper">
+                    <div class="container-fluid flex-grow-1 container-p-y w-100">
+                        @RenderBody()
+                    </div>
+
+                    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to log out?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-danger" id="confirmLogout">Yes, Logout</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+        <footer class="content-footer footer bg-footer-theme">
+            <div class="container-xxl">
+                <div class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
+                    <div class="mb-2 mb-md-0">
+                        &#169;
+                        <script>document.write(new Date().getFullYear());</script>
+                        | Built with ❤️ for better healthcare by
+                        <a href="#" class="footer-link">CareSlot</a>
+                    </div>
+                    <div class="d-none d-lg-inline-block">
+                        <a href="/Home/AboutUs" class="footer-link me-4">About Us</a>
+                        <a href="/Home/PrivacyPolicy" class="footer-link me-4">Privacy Policy</a>
+                        <a href="/Home/Support" class="footer-link">Support</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+                </div>
+                <!-- /Content wrapper -->
+    @*         </div>
+            <!-- /Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div> *@
+
+    <div id="toastBox"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../assets/vendor/js/bootstrap.js"></script>
+    <script src="../assets/vendor/js/menu.js"></script>
+    <script src="../assets/js/main.js"></script>
+
+    <!-- Vendors JS -->
+    <script src="../assets/vendor/libs/apex-charts/apexcharts.js"></script>
+
+    <!-- Page JS -->
+    <script src="../assets/js/dashboards-analytics.js"></script>
+
+    <!-- Github button -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <!-- Sidebar toggle -->
+    <script>
+           $(document).ready(function() {
+              
+
+                        $("#Logout").click(function (event) {
+               event.preventDefault();
+               $("#logoutModal").modal('show');
+           });
+
+           $("#confirmLogout").click(function () {
+               window.location.href = "/User/Logout";
+           });
+
+           $.ajax({
+               type:'Get',
+               url:'/Home/currentRole',
+               dataType:'json',
+               success:function(response){
+                   $("#currentRole").text(response.role);
+               },
+               error:function(error)
+               {
+                   alert("Error fetching current role");
+               }
+           });
+               $.ajax({
+                  type:'Get',
+                  url:'/Home/currentName',
+                  dataType:'json',
+                  success:function(response){
+                      $("#currentName").text(response.name);
+                  },
+                  error:function(error)
+                  {
+                      alert("Error fetching current name");
+                  }
+              });
+
+
+               $.ajax({
+               type: 'GET',
+               url: '/Navbar/GetProfileImage',
+               dataType: 'json',
+               success: function (response) {
+                   if (response.img) {
+                       $(".navbar .avatar img").attr("src", response.img);
+                   }
+               },
+               error: function () {
+                   console.error("Error fetching profile image.");
+               }
+           });
+
+
+        });
+
+              
+
+
+
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

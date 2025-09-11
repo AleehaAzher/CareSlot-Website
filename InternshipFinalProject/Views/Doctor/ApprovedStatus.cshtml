@@ -1,0 +1,154 @@
+﻿@model IEnumerable<InternshipFinalProject_Core.Models.AppointmentModel>
+@{
+    ViewData["Title"] = "Doctor Dashboard";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h3 class="fw-bold">Welcome back, Dr. @ViewBag.name </h3>
+        <p class="text-muted">Here’s your overview for today.</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-4 p-3 text-center">
+                <h6 class="text-gray mb-1" >Today's Appointments</h6>
+                <h3 class="fw-bold text-primary" id="todaysAppointment"></h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-4 p-3 text-center">
+                <h6 class="text-gray mb-1">Pending</h6>
+                <h3 class="fw-bold text-warning" id="pendingAppointment"></h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-4 p-3 text-center">
+                <h6 class="text-gray mb-1">Completed</h6>
+                <h3 class="fw-bold text-success" id="completedAppointment"></h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-4 p-3 text-center">
+                <h6 class="text-gray mb-1">Cancelled</h6>
+                <h3 class="fw-bold text-danger" id="cancelledAppointment"></h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Today's Appointments</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Patient</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int index = 1;
+                                    @if(Model!=null && Model.Any())
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@index.</td>
+                                                <td>@item.Patient?.User?.FullName</td> 
+                                                <td>@item.Date?.ToString("hh:mm")</td> 
+                                                <td>
+                                                    <span class="badge @(item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Pending ? "bg-info text-dark" :
+                                                                                                                                                                 item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Confirmed ? "bg-success" :
+                                                                                                                                                                 item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Completed ? "bg-info" :
+                                                                                                                                                                 item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Cancelled ? "bg-danger" :
+                                                                                                                                       "bg-warning")">
+                                                @item.Status.ToString()
+                                                    </span>
+                                                </td>
+
+                                            </tr>
+                                            index++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="4" class="text-center">No appointments found.</td>
+                                        </tr>
+                                    }
+
+                                }
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Appointments Status</h5>
+                    <canvas id="appointmentsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    
+        $(document).ready(function(){
+            var id='@ViewBag.id';
+            
+            $.ajax({
+                type:'get',
+                url:'/Appointment/AllAppointmentCount',
+                data:{id:id},
+                dataType:"json",
+                success:function(response){
+                    $("#todaysAppointment").text(response.todays);
+                    $("#pendingAppointment").text(response.pending);
+                    $("#completedAppointment").text(response.completed);
+                    $("#cancelledAppointment").text(response.cancelled);
+    const ctx = document.getElementById('appointmentsChart');
+               new Chart(ctx, {
+                   type: 'doughnut',
+                   data: {
+                       labels: ['Pending', 'Completed', 'Cancelled'],
+                       datasets: [{
+                           data: [
+                               parseInt(response.pending),
+                               parseInt(response.completed),
+                               parseInt(response.cancelled)
+                           ],
+                           backgroundColor: ['#f6c23e', '#1cc88a', '#e74a3b']
+                       }]
+                   },
+                   options: {
+                       responsive: true,
+                       plugins: {
+                           legend: { position: 'bottom' }
+                       }
+                   }
+               });
+           },
+                error:function()
+                {
+                    showToast("error","Error fetching today's appointment count");
+                }
+            });
+             
+        
+    });
+</script>

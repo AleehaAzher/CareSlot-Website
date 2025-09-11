@@ -1,0 +1,47 @@
+﻿@{
+    Layout = "~/Views/Shared/_RestrictedLayout.cshtml";
+    ViewData["Title"] = "Profile Status";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-4 text-center p-5">
+
+                <div class="mb-4">
+                    <i class="bx bx-time-five text-warning" style="font-size: 4rem;"></i>
+                    <h2 class="fw-bold text-dark mt-3">Your Profile is Pending Approval</h2>
+                </div>
+
+                <p class="lead text-muted">
+                    Thank you for submitting your details.
+                    Our admin team is reviewing your profile.
+                    You’ll be able to access your dashboard once it’s approved.
+                </p>
+
+                <div class="mt-4">
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning"
+                             role="progressbar" style="width: 50%">
+                            Pending
+                        </div>
+                    </div>
+                    <p class="small text-muted mt-2">Estimated review time: 24–48 hours</p>
+                </div>
+
+                <div class="alert alert-info rounded-3 shadow-sm mt-4">
+                    <i class="bx bx-info-circle me-2"></i>
+                    You don’t need to do anything right now.
+                    We’ll notify you once your profile is approved.
+                </div>
+
+                <div class="mt-4">
+                    <a href="/Navbar/DoctorProfile" class="btn btn-outline-primary px-4 rounded-pill">
+                        <i class="bx bx-edit me-2"></i> Edit Profile
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

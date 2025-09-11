@@ -1,0 +1,41 @@
+﻿@model IEnumerable<InternshipFinalProject_Core.Models.DoctorModel>
+@{
+    var Index = 1;
+    if (Model != null && Model.Any())
+    {
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>@Index</td>
+            <td>@item.User.FullName</td>
+            <td>@item.User.Email</td>
+
+            @{
+                if (item.ApprovalStatus == "Approved")
+                {
+                    <td><span class="badge bg-success">@item.ApprovalStatus</span></td>
+                    <td><i>Eligible</i></td>
+                }
+                if (item.ApprovalStatus == "Pending")
+                {
+                    <td><span class="badge bg-warning">@item.ApprovalStatus</span></td>
+                    <td><i>Incomplete Profile</i></td>
+                }
+                if (item.ApprovalStatus == "Rejected")
+                {
+                    <td><span class="badge bg-danger">@item.ApprovalStatus</span></td>
+                    <td><i>Ineligible</i></td>
+                }
+            }
+
+        </tr>
+        Index++;
+    }
+    }
+    else
+    {
+        <tr>
+            <td colspan="7" class="text-center">No doctors found.</td>
+        </tr>
+    }
+}

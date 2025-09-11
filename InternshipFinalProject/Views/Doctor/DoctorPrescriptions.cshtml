@@ -1,0 +1,155 @@
+﻿@model List<InternshipFinalProject_Core.Models.PrescriptionModel>
+
+@{
+    ViewData["Title"] = "DoctorPrescriptions";
+}
+
+<div class="container-fluid my-4">
+    <h4 class="fw-bold mb-3">Doctor Prescriptions</h4>
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped  mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Prescription Date</th>
+                            <th>Patient</th>
+                            <th>Diagnosis</th>
+                            <th>Advice</th>
+
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="prescriptionTableBody">
+
+                        @{
+                            int index = 1;
+                            if (Model != null && Model.Count > 0)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@index</td>
+                                        <td class="text-nowrap">@item.PrescribedDate?.ToString("MMM dd, yyyy - hh:mm tt")</td>
+                                        <td class="text-nowrap">@item.Patient?.User?.FullName</td>
+                                        <td class="text-nowrap">@item.Diagnosis</td>
+                                        <td class="text-nowrap">@item.Advice</td>
+
+
+                                        <td class="d-flex justify-content-end gap-2">
+                                            <button class="btn btn-sm btn-outline-info viewDetails" data-id="@item.PrescriptionId">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                    index++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center">No Prescription found.</td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewPrescriptionModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title">Prescription Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group mb-3">
+                    <li class="list-group-item"><strong>Doctor:</strong> <span id="viewDoctor"></span></li>
+                    <li class="list-group-item"><strong>Patient:</strong> <span id="viewPatient"></span></li>
+                    <li class="list-group-item"><strong>Date:</strong> <span id="viewDate"></span></li>
+                    <li class="list-group-item"><strong>Diagnosis:</strong> <span id="viewDiagnosis"></span></li>
+                    <li class="list-group-item"><strong>Advice:</strong> <span id="viewAdvice"></span></li>
+                </ul>
+
+                <h6>Medicines</h6>
+                <table class="table table-bordered" id="viewMedicineTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Medicine Name</th>
+                            <th>Dosage</th>
+                            <th>Form</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody id="viewMedicineBody">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $(".viewDetails").click(function(event) {
+            event.preventDefault();
+            var id = $(this).data('id');
+
+               $.ajax({
+        type: 'get',
+        url: '/Prescription/GetPrescriptionDetailsById',
+        dataType: 'json',
+        data: { id: id },
+        success: function(response) {
+            if (response.success) {
+                console.log(response);
+                $("#viewDoctor").text("Dr." +response.doctorName || "N/A");
+                $("#viewPatient").text(response.patientName || "N/A");
+                $("#viewDate").text(response.prescribedDate ? new Date(response.prescribedDate).toLocaleString() : "N/A");
+                $("#viewDiagnosis").text(response.diagnosis || "N/A");
+                $("#viewAdvice").text(response.advice || "N/A");
+
+                const tbody = $("#viewMedicineBody");
+                tbody.empty();
+
+                if(response.medicines && response.medicines.length ){
+                    response.medicines.forEach(function(med){
+                        tbody.append(`
+                            <tr>
+                                <td>${med.medicineName}</td>
+                                <td>${med.dosage}</td>
+                                <td>${med.form}</td>
+                                <td>${med.duration}</td>
+                            </tr>
+                        `);
+                    });
+                } else {
+                    tbody.append('<tr><td colspan="4" class="text-center">No medicines added.</td></tr>');
+                }
+
+                $("#viewPrescriptionModal").modal("show");
+            }
+        },
+        error: function() {
+            alert("Error fetching prescription details.");
+        }
+    });
+
+        });
+    });
+</script>

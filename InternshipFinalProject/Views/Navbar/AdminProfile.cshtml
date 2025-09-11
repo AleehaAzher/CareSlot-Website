@@ -1,0 +1,174 @@
+﻿
+<div class="container-fluid d-none" id="AdminProfile">
+    <p class="d-none" id="currentId"></p>
+    <div class="container py-5">
+        <div class="card shadow-lg border-0 rounded-4 mx-auto" style="max-width: 700px;">
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h4 class="mb-0">My Profile</h4>
+            </div>
+            <div class="card-body p-4">
+
+                <div class="text-center mb-4">
+                    <img src="../assets/img/avatars/defaultAvatar.jpg"
+                         alt="user-avatar"
+                         class="rounded-circle border shadow-sm mb-3"
+                         width="120" height="120"
+                         id="uploadedAvatar" />
+                    <div>
+                        <label for="upload" class="btn btn-sm btn-primary me-2 mb-2">
+                            <i class="bx bx-upload me-1"></i> Upload New
+                            <input type="file" id="upload" hidden accept="image/png, image/jpeg" />
+                        </label>
+                        <button type="button" class="btn btn-sm btn-outline-secondary mb-2" id="resetImage">
+                            <i class="bx bx-reset me-1"></i> Reset
+                        </button>
+                        <p class="text-muted small mt-2">Allowed JPG, PNG. Max size 800K</p>
+                    </div>
+                    <div class="alert alert-success" id="UpdateSuccess" style="display: none;">
+                        <strong>Success!</strong> <span id="successMessage"></span>
+                    </div>
+
+                    <div class="alert alert-danger" id="UpdateError" style="display: none;">
+                        <strong>Error!</strong> <span id="errorMessage"></span>
+                    </div>
+                </div>
+
+                <form id="formAccountSettings" method="POST" onsubmit="return false;">
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label fw-bold">Full Name</label>
+                        <input class="form-control" type="text" id="fullName" name="fullName" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-bold">E-mail</label>
+                        <input class="form-control" type="email" id="email" name="email" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label fw-bold">New Password</label>
+                        <input class="form-control" type="password" id="newPassword" name="newPassword" />
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary px-4 me-2">Save Changes</button>
+                        <a href="/Home/Index" class="btn  btn-outline-secondary px-4" id="cancelChanges">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: '/Navbar/getId',
+            dataType: 'json',
+             xhrFields: { withCredentials: true },
+            success: function (response) {
+                $("#currentId").text(response.id);
+
+                var id = parseInt(response.id);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Navbar/getData',
+                    data: { id: id },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            $("#fullName").val(response.name);
+                            $("#email").val(response.email);
+                            if (response.img && response.img !== null && response.img !== "") {
+                            $("#uploadedAvatar").attr("src", response.img);
+                        }
+                              $("#AdminProfile").removeClass("d-none");
+                        } else {
+                            alert("Failed to get user data.");
+                        }
+                    },
+                    error: function () {
+                        alert("Error getting user data.");
+                    }
+                });
+            },
+            error: function () {
+                alert("Error getting currentId in profile");
+            }
+        });
+
+        var uploadedFile = null;
+
+        $("#upload").on("change", function (event) {
+            var file = event.target.files[0];
+            if (file) {
+                uploadedFile = file;
+
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#uploadedAvatar").attr("src", e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        $("#resetImage").on("click", function () {
+            $("#uploadedAvatar").attr("src", "../assets/img/avatars/defaultAvatar.jpg");
+            $("#upload").val("");
+            uploadedFile = null;
+        });
+
+        $("#formAccountSettings").on("submit",function(event){
+            event.preventDefault();
+              var formData = new FormData();
+
+    formData.append("id", $("#currentId").text());
+    formData.append("email", $("#email").val());
+    formData.append("password", $("#newPassword").val());
+    formData.append("fullName", $("#fullName").val());
+
+    if (uploadedFile) {
+        formData.append("img", uploadedFile);
+    }
+
+        $.ajax({
+            type:'Post',
+            url:'/Navbar/UpdateProfile',
+            data:formData,
+             contentType: false,
+            processData: false,
+            success: function (response) {
+                if(response.success)
+                        {
+                        $("#successMessage").text(response.message);
+                        $("#UpdateSuccess").show();
+
+                        $("#UpdateError").hide();
+
+                        setTimeout(function() {
+                            window.location.href = "/Home/Index";
+                        }, 2000);
+                        }
+                       else
+                       {
+                        $("#errorMessage").text(response.message);
+                        $("#UpdateError").show();
+
+                        $("#UpdateSuccess").hide();
+                       }
+                    },
+                    error: function (xhr, status, error) {
+                        $("#errorMessage").text("Something went wrong: " + error);
+                        $("#UpdateError").show();
+
+                        $("#UpdateSuccess").hide();
+                    }
+
+           });
+        });
+    });
+</script>

@@ -1,0 +1,150 @@
+﻿<div class="container-fluid p-4" >
+
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold">Welcome to <span class="text-primary">CareSlot</span></h2>
+            <p class="text-muted">Your healthcare appointment management system</p>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary px-4 py-2 d-flex align-items-center shadow-sm">
+                <i class="bi bi-file-earmark-bar-graph me-2 fs-5"></i>
+                <span class="fw-bold fs-6">Generate Reports</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center h-100 " id="manageDoctors">
+                <div class="card-body" id="doctorCard">
+                    <i class="bi bi-person-badge fs-1 text-primary"></i>
+                    <h5 class="fw-bold mt-3">Manage Doctors</h5>
+                    <p class="text-muted small">Add, update or remove doctors</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center h-100">
+                <div class="card-body" id="patientCard">
+                    <i class="bi bi-people fs-1 text-success"></i>
+                    <h5 class="fw-bold mt-3">Manage Patients</h5>
+                    <p class="text-muted small">Register or update patient records</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center h-100">
+                <div class="card-body" id="appointmentCard">
+                    <i class="bi bi-calendar-check fs-1 text-info"></i>
+                    <h5 class="fw-bold mt-3">Manage Appointments</h5>
+                    <p class="text-muted small">Schedule and track appointments</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Doctors</h6>
+                    <h3 class="fw-bold text-primary" id="doctorCount"></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Patients</h6>
+                    <h3 class="fw-bold text-success" id="patientCount"></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Appointments</h6>
+                    <h3 class="fw-bold text-info" id="appointmentCount">12</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<style>
+    .card {
+        border-radius: 10px;
+        background: #fff; 
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+         $(document).ready(function(){
+        $("#doctorCard").click(function(){
+                window.location.href = '/Doctor/ManageDoctors';
+        });
+        $.ajax({
+            type:'get',
+            url:'/Doctor/DoctorCount',
+            dataType:'json',
+            success:function(response){
+                if(response.success)
+                {
+                    $("#doctorCount").text(parseInt(response.count));
+                }
+            },
+            error:function()
+            {
+                alert("Error getting doctor count");
+            }
+        });
+         $("#patientCard").click(function(){
+                window.location.href = '/Patient/ManagePatients';
+         });  
+                $.ajax({
+                    type:'get',
+                    url:'/Patient/PatientCount',
+                    dataType:'json',
+                    success:function(response){
+                        if(response.success)
+                        {
+                            $("#patientCount").text(parseInt(response.count));
+                        }
+                    },
+                    error:function()
+                    {
+                        alert("Error getting patient count");
+                    }
+                });
+     $("#appointmentCard").click(function(){
+                window.location.href = '/Appointment/ManageAppointments';
+        });
+        $.ajax({
+                    type:'get',
+                    url:'/Appointment/AppointmentCount',
+                    dataType:'json',
+                    success:function(response){
+                        if(response.success)
+                        {
+                            $("#appointmentCount").text(parseInt(response.count));
+                        }
+                    },
+                    error:function()
+                    {
+                        alert("Error getting appointment count");
+                    }
+                });
+
+    });
+    </script>
+   
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">

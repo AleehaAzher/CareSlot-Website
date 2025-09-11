@@ -1,0 +1,64 @@
+﻿@model List<InternshipFinalProject_Core.Models.AppointmentModel>
+
+@{
+    int index = 1;
+    if (Model != null && Model.Count > 0)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>@index</td>
+                @{
+                    if(item.Doctor?.User.IsActive==false)
+                    {
+                        <td class="text-danger text-nowrap">Doctor not found</td>
+                    }
+                    else
+                    {
+                        <td class="text-nowrap">@item.Doctor?.User?.FullName</td>
+                    }
+                }
+                 @{
+                    if(item.Patient?.User.IsActive==false)
+                    {
+                        <td class="text-danger text-nowrap">Patient not found</td>
+                    }
+                    else
+                    {
+                        <td class="text-nowrap">@item.Patient?.User?.FullName</td>
+                    }
+                }
+                <td class="text-nowrap">@item.Date?.ToString("MMM dd, yyyy - hh:mm tt")</td>
+                <td>
+                    <span class="badge @(item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Pending ? "bg-info text-dark" :
+                                                                                                       item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Confirmed ? "bg-success" :
+                                                                                                       item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Completed ? "bg-info" :
+                                                                                                       item.Status == InternshipFinalProject_Core.HelperClasses.AppointmentStatusEnum.Cancelled ? "bg-danger" :
+                                                                             "bg-warning")">
+            @item.Status.ToString()
+        </span>
+    </td>
+   @* <td ><i>@item.Notes</i></td>*@
+
+    <td class="d-flex justify-content-end gap-2">
+        <button class="btn btn-sm btn-outline-info viewDetails" data-id="@item.AppointmentId">
+            <i class="bi bi-eye"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-primary editAppointment" data-id="@item.AppointmentId">
+            <i class="bi bi-pencil-square"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-danger deleteAppointmentBtn" data-bs-toggle="modal" data-bs-target="#deleteAppointmentModal" data-id="@item.AppointmentId">
+            <i class="bi bi-trash"></i>
+        </button>
+    </td>
+</tr>
+            index++;
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="7" class="text-center">No appointments found.</td>
+        </tr>
+    }
+}
