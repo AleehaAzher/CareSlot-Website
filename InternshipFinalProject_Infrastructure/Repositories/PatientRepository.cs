@@ -3,6 +3,7 @@ using InternshipFinalProject_Core.Models;
 using InternshipFinalProject_Core.RepositoryInterfaces;
 using InternshipFinalProject_Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -273,8 +274,17 @@ namespace InternshipFinalProject_Infrastructure.Repositories
             if (status == "Completed")
             {
                 var response = await dataAccessClassObj.AppointmentTable
+                      .Include(a => a.Doctor)
               .FirstOrDefaultAsync(a => a.AppointmentId == id);
                 response.Status = AppointmentStatusEnum.Completed;
+                var invoiceObj = new InvoiceModel();
+                invoiceObj.AppointmentId = response.AppointmentId;
+                invoiceObj.DoctorId= response.DoctorId;
+                invoiceObj.PatientId = response.PatientId;
+                invoiceObj.Amount = response.Doctor.Fees;
+                await dataAccessClassObj.InvoiceTable.AddAsync(invoiceObj);
+                await dataAccessClassObj.SaveChangesAsync();
+                response.InvoiceId = invoiceObj.InvoiceId;
                 rslt.Success = true;
                 rslt.Message = "Appointment status updated successfully";
                 await dataAccessClassObj.SaveChangesAsync();

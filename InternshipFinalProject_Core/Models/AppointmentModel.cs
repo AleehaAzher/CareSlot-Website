@@ -24,6 +24,8 @@ namespace InternshipFinalProject_Core.Models
         public DoctorModel Doctor { get; set; }
         public int? PatientId { get; set; }
         public PatientModel Patient { get; set; }
-        
+        public int? InvoiceId { get; set; }
+        public InvoiceModel Invoice { get; set; }
+
     }
 }

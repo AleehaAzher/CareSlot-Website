@@ -4,6 +4,7 @@ using InternshipFinalProject_Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InternshipFinalProject_Infrastructure.Migrations
 {
     [DbContext(typeof(DataAccessClass))]
-    partial class DataAccessClassModelSnapshot : ModelSnapshot
+    [Migration("20250912055905_DefaultPaidStatus")]
+    partial class DefaultPaidStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,5 +1,4 @@
-﻿
-<!doctype html>
+﻿<!doctype html>
 <html lang="en"
       class="layout-menu-fixed layout-compact"
       data-assets-path="../assets/"
@@ -147,21 +146,6 @@
                 border-left-color: #0d6efd;
                 color: #0d6efd;
             }
-
-
-      /*   #menuToggleBtn {
-            position: fixed;
-            top: 20px;
-            left: 16px; 
-            z-index: 1050; 
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            padding: 6px 10px;
-            cursor: pointer;
-        } */
-
-     
 
      </style>
 
@@ -355,7 +339,6 @@
             </a> *@
             <div class="layout-page">
 
-                <!-- Navbar -->
                 <nav class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
                 id="layout-navbar">
                   <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
@@ -367,7 +350,6 @@
                         
 
                         <ul class="navbar-nav flex-row align-items-center ms-md-auto">
-                            <!-- User -->
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                 <a class="nav-link dropdown-toggle hide-arrow p-0"
                                 href="javascript:void(0);"
@@ -417,12 +399,10 @@
                                     </li>
                                 </ul>
                             </li>
-                            <!-- /User -->
                         </ul>
                     </div>
                 </nav>
 
-                <!-- Content -->
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
                         @RenderBody()
@@ -464,47 +444,31 @@
                         </div>
                     </footer>
                 </div>
-                <!-- /Content wrapper -->
             </div>
-            <!-- /Layout page -->
         </div>
 
-        <!-- Overlay -->
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
  
     <div id="toastBox"></div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.datatables.net/v/dt/dt-2.3.4/datatables.min.css" rel="stylesheet" integrity="sha384-pmGS6IIcXhAVIhcnh9X/mxffzZNHbuxboycGuQQoP3pAbb0SwlSUUHn2v22bOenI" crossorigin="anonymous">
+    <script src="https://cdn.datatables.net/v/dt/dt-2.3.4/datatables.min.js" integrity="sha384-X2pTSfom8FUa+vGQ+DgTCSyBZYkC1RliOduHa0X96D060s7Q//fnOh3LcazRNHyo" crossorigin="anonymous"></script>
+
     <script src="../assets/vendor/js/bootstrap.js"></script>
     <script src="../assets/vendor/js/menu.js"></script>
     <script src="../assets/js/main.js"></script>
 
-    <!-- Vendors JS -->
     <script src="../assets/vendor/libs/apex-charts/apexcharts.js"></script>
 
-    <!-- Page JS -->
     <script src="../assets/js/dashboards-analytics.js"></script>
 
-    <!-- Github button -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     
-    <!-- Sidebar toggle -->
     <script>
         $(document).ready(function() {
-        // const toggleBtn = document.querySelector('.layout-menu-toggle'); <-- add this
-        //     const toggleIcon = toggleBtn.querySelector('i');
-        //     toggleBtn.addEventListener('click', function () {
-        //           document.documentElement.classList.toggle('layout-menu-collapsed');
-        //    if (document.documentElement.classList.contains('layout-menu-collapsed')) {
-        //        toggleIcon.classList.remove('bx-chevron-left');
-        //        toggleIcon.classList.add('bx-chevron-right');
-        //    } else {
-        //        toggleIcon.classList.remove('bx-chevron-right');
-        //        toggleIcon.classList.add('bx-chevron-left');
-        //    }
-        //     });
-
+       
             $("#Logout").click(function (event) {
             event.preventDefault();
             $("#logoutModal").modal('show');
@@ -538,7 +502,6 @@
                    alert("Error fetching current name");
                }
             });
-           
          
             $.ajax({
             type: 'GET',
@@ -578,14 +541,14 @@
                  }
                });
                        $(function () {
-          let current = window.location.pathname.toLowerCase();
-          $(".menu-item a").each(function () {
-            if (this.getAttribute("href").toLowerCase() === current) {
-              $(this).parent().addClass("active");
-            }
-          });
-        });
-     });
+                      let current = window.location.pathname.toLowerCase();
+                      $(".menu-item a").each(function () {
+                    if (this.getAttribute("href").toLowerCase() === current) {
+                      $(this).parent().addClass("active");
+                    }
+                  });
+                });
+             });
          
            window.showToast = function(type, message, onDismiss) {
             const toastBox = document.getElementById("toastBox");

@@ -46,19 +46,8 @@ namespace InternshipFinalProject_Infrastructure.Repositories
                         UserId = userModelObj.UserId
                     };
                     await dataAccessObj.DoctorTable.AddAsync(doctor);
-                    //var doctorDays = new DoctorAvailableDays
-                    //{
-                    //    AvailabledaysId = userModelObj.Doctor.DoctorId
-                    //};
-                    //await dataAccessObj.DoctorAvailableDaysTable.AddAsync(doctorDays);
-                    await dataAccessObj.SaveChangesAsync();
 
-                    //var appointment = new AppointmentModel
-                    //{
-                    //    DoctorId = doctor.DoctorId,
-                    //    PatientId = null,
-                    //};
-                    //await dataAccessObj.AppointmentTable.AddAsync(appointment);
+                    await dataAccessObj.SaveChangesAsync();
                 }
                 else if (userModelObj.Role == "Patient")
                 {
@@ -68,13 +57,6 @@ namespace InternshipFinalProject_Infrastructure.Repositories
                     };
                     await dataAccessObj.PatientTable.AddAsync(patient);
                     await dataAccessObj.SaveChangesAsync();
-
-                    //var appointment = new AppointmentModel
-                    //{
-                    //    PatientId = patient.PatientId,
-                    //    DoctorId = null,
-                    //};
-                    //await dataAccessObj.AppointmentTable.AddAsync(appointment);
                 }
 
                 await dataAccessObj.SaveChangesAsync();

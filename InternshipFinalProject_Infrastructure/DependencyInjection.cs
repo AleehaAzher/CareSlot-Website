@@ -19,6 +19,7 @@ namespace InternshipFinalProject_Infrastructure
             services.AddScoped<IPatientRepository, PatientRepository>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+            services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 
             return services;
         }

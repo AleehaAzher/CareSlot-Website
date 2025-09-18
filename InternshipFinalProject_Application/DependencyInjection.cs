@@ -20,6 +20,7 @@ namespace InternshipFinalProject_Application
             services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IPrescriptionService, PrescriptionService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
 
             return services;
         }

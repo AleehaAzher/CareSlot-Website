@@ -1,23 +1,7 @@
 ﻿@model IEnumerable<InternshipFinalProject_Core.Models.AppointmentModel>
 
 <div class="container-fluid py-4">
-    @* <div id="successAlert" class="alert alert-success alert-dismissible fade show d-none" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i>
-        <strong>Appointment Accepted!</strong>
-        Doctor: <span id="successDoctor"></span> |
-        Department: <span id="successDepartment"></span> |
-        Notes: <span id="successNotes"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
 
-    <div id="dangerAlert" class="alert alert-danger alert-dismissible fade show d-none" role="alert">
-        <i class="bi bi-x-circle-fill me-2"></i>
-        <strong>Appointment Cancelled!</strong>
-        Doctor: <span id="dangerDoctor"></span> |
-        Department: <span id="dangerDepartment"></span> |
-        Reason: <span id="dangerNotes"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div> *@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold">My Appointments</h4>
       
@@ -55,7 +39,7 @@
 
     <div id="appointmentList">
         
-                <partial name="MyAppointmentListPartialView" model="Model" />
+         <partial name="MyAppointmentListPartialView" model="Model" />
     </div>
 </div>
 
@@ -96,7 +80,6 @@
                     <li class="list-group-item">
                         <strong>Updated At:  </strong> <span id="viewUpdatedAt"></span>
                     </li>
-
                 </ul>
             </div>
             <div class="modal-footer">
@@ -165,9 +148,90 @@
     </div>
 </div>
 
+<div class="modal fade" id="invoiceModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-secondary text-white border-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+
+                <div class="text-center mb-4 border-bottom pb-2" style="border-color:#0000 !important;">
+                    <div class="d-flex justify-content-center align-items-center mb-2 gap-2">
+                        <img src="../assets/img/icons/brands/Stetho-logo.jpeg" alt="CareSlot Logo"
+                             style="width: 60px; height: auto;">
+                        <h3 class="fw-bold text-dark mb-0">CareSlot</h3>
+                    </div>
+
+                    <p class="text-muted mb-3">Providing healthcare solutions with care and technology</p>
+
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Bill To:</strong> <span id="invoicePatientName"></span></p>
+                        <p class="mb-1"><strong>Address:</strong> <span id="invoicePatientAddress"></span></p>
+
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p class="mb-1"><strong>Invoice Date:</strong> <span id="invoiceDate"></span></p>
+                        <p class="mb-0"><strong>Due Date:</strong> <span id="invoiceDueDate"></span></p>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Item & Description</th>
+                                <th class="text-end">Amount ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoiceItems">
+                            <tr>
+                                <td>1</td>
+                                <td>Consultation Fee</td>
+                                <td class="text-end" id="doctorConsultationFee"></td>
+                            </tr>
+                           
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-end"><strong>Sub Total</strong></td>
+                                <td class="text-end" id="subTotalFee"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-end"><strong>Tax (5%)</strong></td>
+                                <td class="text-end " id="tax"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-end text-dark"><strong>Total</strong></td>
+                                <td class="text-end text-dark fw-bold" id="totalFee"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="mt-3">
+                    <small class="mb-0"><strong>Notes:</strong> Thank you for choosing CareSlot. We wish you a speedy recovery!</small>
+                </div>
+            </div>
+
+            <div class="modal-footer border-top-0">
+                <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-primary rounded-3" id="downloadInvoice">Download Invoice</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 
 <script>
     $(document).ready(function(){
@@ -183,19 +247,18 @@
           success: function (response) {
           if (response.success) {
 
-                    if (response.doctorName) {
-                        $("#viewDoctor").text(" Dr. " +response.doctorName);
+            if (response.doctorName) {
+                  $("#viewDoctor").text(" Dr. "+response.doctorName);
             } else {
                 $("#viewDoctor").text("N/A");
             }
-
-                            if (response.patientName) {
+            if (response.patientName) {
                         $("#viewPatient").text(response.patientName);
             } else {
                 $("#viewPatient").text("N/A");
             }
 
-                if (response.date) {
+             if (response.date) {
                 $("#viewDate").text(new Date(response.date).toLocaleString());
             } else {
                 $("#viewDate").text("N/A");
@@ -248,13 +311,14 @@
                 {
                         $("#viewFees").text("N/A");
                 }
-                     if (response.mode)
-                    {
+                if (response.mode)
+                {
                         $("#viewMode").text(response.mode);
-                    } else
-                    {
-                            $("#viewMode").text("N/A");
-                    }
+                }
+                else
+                {
+                        $("#viewMode").text("N/A");
+                }
 
             $("#viewAppointmentModal").modal("show");
         }
@@ -383,5 +447,58 @@
                 }
             });
         });
+         $(document).on("click", ".payNow", function (event) {
+        event.preventDefault();
+
+        var id=$(this).data('id');
+        $.ajax({
+            type:'get',
+            url:'/Invoice/GetInvoice',
+            data:{id:id},
+            dataType:"json",
+            success:function(response){
+               if (response.success) {
+                $("#invoicePatientName").text(response.patientName);
+                $("#invoicePatientAddress").text(response.patientAddress);
+
+                let invoiceDate = new Date(response.date);
+                $("#invoiceDate").text(invoiceDate.toLocaleDateString());
+
+                let dueDate = new Date(invoiceDate);
+                dueDate.setDate(dueDate.getDate() + 3);
+                $("#invoiceDueDate").text(dueDate.toLocaleDateString());
+
+                let fee = parseFloat(response.fee) || 0;
+                let tax = fee * 0.05;
+                let total = fee + tax;
+
+                $("#doctorConsultationFee").text(fee.toFixed(2));
+                $("#subTotalFee").text(fee.toFixed(2));
+                $("#tax").text(tax.toFixed(2));
+                $("#totalFee").text(total.toFixed(2));
+
+                $("#invoiceModal").modal("show");
+            }
+            },
+            error:function()
+            {
+                showToast("error","Error fetching data");
+            }
+        });
+    });
+        $(document).on("click", "#downloadInvoice", function () {
+    const jsPDF = window.jspdf.jsPDF;
+
+        html2canvas(document.querySelector("#invoiceModal .modal-body")).then(canvas => {
+            const imgData = canvas.toDataURL("image/png");
+            const pdf = new jsPDF("p", "mm", "a4");
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+            pdf.save("Invoice.pdf");
+        });
+    });
     });
 </script>

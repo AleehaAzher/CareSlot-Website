@@ -22,6 +22,8 @@ namespace InternshipFinalProject_Infrastructure.DataAccess
         public DbSet<DoctorAvailableDays> DoctorAvailableDaysTable { get; set; }
         public DbSet<PrescriptionModel> Prescriptiontable {  get; set; }
         public DbSet<PrescriptionDetailsModel> PrescriptionDetailsTable {  get; set; }
+        public DbSet<InvoiceModel> InvoiceTable { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AppointmentModel>()
@@ -39,6 +41,13 @@ namespace InternshipFinalProject_Infrastructure.DataAccess
             modelBuilder.Entity<AppointmentModel>()
                 .Property(a => a.AppointmentType)
                 .HasDefaultValue("Audio Call");
+            modelBuilder.Entity<AppointmentModel>()
+                .HasOne(a => a.Invoice)
+                .WithOne(i => i.Appointment)
+                .HasForeignKey<InvoiceModel>(i => i.AppointmentId);
+            modelBuilder.Entity<InvoiceModel>()
+               .Property(a => a.PaidStatus)
+               .HasDefaultValue(false);
         }
     }
 }

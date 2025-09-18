@@ -17,7 +17,7 @@
     <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-striped align-middle mb-0">
+                <table class="table table-striped align-middle mb-0" id="PatientListTable">
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
@@ -52,7 +52,6 @@
                                 index++;
                             }
                         }
-
                     </tbody>
                 </table>
             </div>
@@ -63,8 +62,8 @@
 <div class="modal fade" tabindex="-1" id="addPatientModal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 shadow-lg">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title">Add Patient</h5>
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title text-white">Add Patient</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -111,7 +110,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
-                        <button class="btn btn-success rounded-3" type="submit">Save</button>
+                        <button class="btn btn-primary rounded-3" type="submit">Save</button>
                     </div>
                 </form>
             </div>
@@ -123,8 +122,8 @@
 <div class="modal fade" id="editPatientModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 shadow-lg">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">Edit Patient</h5>
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title text-white">Edit Patient</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -138,8 +137,8 @@
 <div class="modal fade" id="deletePatientModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 shadow-lg">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">Delete Patient</h5>
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title text-white">Delete Patient</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">
@@ -176,6 +175,7 @@
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
 <script>
     $(document).ready(function () {
              // function showAlert(isSuccess, message) {
@@ -189,6 +189,9 @@
              //       $("#UpdateError").fadeIn().delay(3000).fadeOut();
              //   }
              // }
+
+            $("#PatientListTable").DataTable();
+                
              $("#addPatientForm").on("submit", function (event) {
                     event.preventDefault();
                     var formData={

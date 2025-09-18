@@ -254,5 +254,9 @@ namespace InternshipFinalProject.Controllers
             }
             return PartialView("MyAppointmentListPartialView", appointmentlist);
         }
+        //public IActionResult GenerateInvoice()
+        //{
+        //    return View();
+        //}
     }
 }
