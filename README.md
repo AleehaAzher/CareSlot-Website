@@ -79,16 +79,16 @@ The implementation currently includes:
 
 ## Screenshots
 
-### Dashboard
-Coming soon.
-
-### Appointment Workflow
-Coming soon.
-
-### Prescription & Invoice Views
-Coming soon.
-
-## Future Improvements
+<img width="975" height="630" alt="image" src="https://github.com/user-attachments/assets/dfe0c7a3-e241-4520-bb08-213446187a06" />
+<img width="975" height="437" alt="image" src="https://github.com/user-attachments/assets/acbbcd62-f064-42d2-acc9-0327e1fa9ed3" />
+<img width="975" height="434" alt="image" src="https://github.com/user-attachments/assets/4a9734f1-4900-4c8b-bcfe-d9520930b13f" />
+<img width="975" height="437" alt="image" src="https://github.com/user-attachments/assets/101525e2-49ad-4159-8cff-aa449a6980e1" />
+<img width="975" height="436" alt="image" src="https://github.com/user-attachments/assets/a4ef8406-cda6-491d-b260-fe6c2e470ab8" />
+<img width="975" height="431" alt="image" src="https://github.com/user-attachments/assets/6726df62-5ffe-49ac-a583-09e3efc3d1df" />
+<img width="975" height="436" alt="image" src="https://github.com/user-attachments/assets/3f0d65d0-badd-43c8-9a97-d3b3b2a91440" />
+<img width="975" height="438" alt="image" src="https://github.com/user-attachments/assets/48f3293f-5638-486e-a75f-8fdd01c01724" />
+<img width="1892" height="898" alt="image" src="https://github.com/user-attachments/assets/f0bc2909-c2cd-4c53-a9d0-fa2e8cfadea4" />
+<img width="1913" height="902" alt="image" src="https://github.com/user-attachments/assets/2c521afa-d269-485c-b1ec-ac71c921b823" />
 
 Potential enhancements for the next phase include:
 
